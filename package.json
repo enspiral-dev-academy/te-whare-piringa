@@ -13,6 +13,7 @@
     "start": "node server",
     "initdb": "node scripts/initdb",
     "seed": "node scripts/add-test-bookings",
+    "postinstall": "webpack",
     "deploy-env-vars": "node scripts/deploy-env-vars"
   },
   "engines": {
