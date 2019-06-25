@@ -30,7 +30,7 @@ Run the app with `npm run dev` and it will be running on [http://localhost:3000]
 
 Run this script to create environment variables: `npm run deploy-env-vars`
 
-The application is hosted on Heroku at http://tewharepiringa.herokuapp.com.
+The application is hosted on Heroku at https://tewharepiringa.herokuapp.com.
 
 The application is deployed every time code is pushed to the `master` branch.
 
