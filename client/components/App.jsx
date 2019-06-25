@@ -1,7 +1,7 @@
 import React from 'react'
 
-import {Route, Router} from 'react-router-dom'
-import {connect} from 'react-redux'
+import { Route, Router } from 'react-router-dom'
+import { connect } from 'react-redux'
 
 import Auth from '../auth'
 import Book from './Book'
@@ -17,7 +17,7 @@ import DetailsProfile from './DetailsProfile'
 import Home from './Home'
 import Error from './Error'
 
-import {checkLogin} from '../actions/auth'
+import { checkLogin } from '../actions/auth'
 
 function handleAuthentication (cb) {
   const auth = new Auth()

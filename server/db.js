@@ -2,7 +2,10 @@ const ObjectId = require('mongodb').ObjectID
 const MongoClient = require('mongodb').MongoClient
 
 const { mongoDbUri } = require('../shared/vars')
-const validate = require('../shared/validation')
+const {
+  validateUserDetails,
+  validateBookingDetails,
+  checkBookingForOverlap } = require('../shared/validation')
 
 function getAllBookings () {
   return getDatabase()
@@ -36,11 +39,11 @@ function getAdminStatus (authId) {
 }
 
 function addBooking (booking, authId) {
-  let validationStatus = validate.validateBookingDetails(booking)
+  let validationStatus = validateBookingDetails(booking)
   if (validationStatus !== 'ok') throw new Error(validationStatus)
   return getAllBookings()
     .then(bookings => {
-      validationStatus = validate.checkBookingForOverlap(booking, bookings)
+      validationStatus = checkBookingForOverlap(booking, bookings)
       if (validationStatus !== 'ok') throw new Error(validationStatus)
     })
     .then(() => initialiseBooking(booking))
@@ -73,7 +76,7 @@ function getDatabase () {
 }
 
 function addUser (user) {
-  const validationStatus = validate.validateUserDetails(user)
+  const validationStatus = validateUserDetails(user)
   if (validationStatus !== 'ok') throw new Error(validationStatus)
   user.dateAdded = new Date()
   user.admin = false

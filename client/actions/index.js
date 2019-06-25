@@ -1,4 +1,4 @@
-import {login} from '../api'
+import { login } from '../api'
 
 export const BOOKINGPOSTED = 'BOOKINGPOSTED'
 export const RECEIVE_BOOKINGS = 'RECEIVE_BOOKINGS'

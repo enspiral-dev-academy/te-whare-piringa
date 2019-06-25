@@ -1,4 +1,4 @@
-import {UNCONFIRMED} from '../actions/index'
+import { UNCONFIRMED } from '../actions/index'
 const initialState = []
 
 const unconfirmed = (state = initialState, action) => {

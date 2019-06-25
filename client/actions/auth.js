@@ -1,5 +1,5 @@
-import {login, getAllBookings} from '../api'
-import {receiveBookings, WAITING, NOT_WAITING} from './index'
+import { login, getAllBookings } from '../api'
+import { receiveBookings, WAITING, NOT_WAITING } from './index'
 
 const localStorage = global.window.localStorage
 
@@ -18,7 +18,7 @@ export function checkLogin (redirect) {
       return login('get', '/checklogin')
         .then(res => {
           if (!res.body.user) {
-            res.body.error && console.log(res.body.error)
+            res.body.error && console.error(res.body.error)
             dispatch(receivedData())
             return dispatch(noUserExists())
           }
@@ -75,7 +75,7 @@ export function submitRegistration (registrationInfo, redirect) {
         }
         if (res.body.error) {
           dispatch(registrationFailed(res.body.error))
-          console.log(res.body.error)
+          console.error(res.body.error)
         }
       })
   }

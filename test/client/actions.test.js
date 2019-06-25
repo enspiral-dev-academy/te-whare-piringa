@@ -1,4 +1,4 @@
-import {makeNewBooking} from '../../client/actions/calendar'
+import { makeNewBooking } from '../../client/actions/calendar'
 
 test('create actions for adding a new booking', () => {
   const dateStart = 1497844905633

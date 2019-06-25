@@ -7,6 +7,8 @@ module.exports = {
   'extends': [
     'eslint:recommended',
     'plugin:react/recommended',
+    'plugin:import/errors',
+    'plugin:import/warnings',
     'standard'
   ],
   'plugins': [
@@ -14,6 +16,16 @@ module.exports = {
     'promise',
     'react'
   ],
+  'settings': {
+    'import/resolver': {
+      'node': {
+        'extensions': [
+          '.js',
+          '.jsx'
+        ]
+      }
+    }
+  },
   'rules': {
     'eol-last': ['error', 'always'],
     'no-multiple-empty-lines': [

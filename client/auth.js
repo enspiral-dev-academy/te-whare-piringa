@@ -2,7 +2,8 @@ import auth0 from 'auth0-js'
 
 import history from './utils/history'
 
-import { authDomain, authClientId, callbackUrl } from '../shared/vars'
+import { authDomain } from '../shared/config'
+import { authClientId, callbackUrl } from '../shared/vars'
 
 const localStorage = global.window.localStorage
 

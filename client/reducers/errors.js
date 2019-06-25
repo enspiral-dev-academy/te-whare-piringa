@@ -1,4 +1,4 @@
-import {VALIDATION_ERROR, CLEAR_ERROR} from '../actions'
+import { VALIDATION_ERROR, CLEAR_ERROR } from '../actions'
 
 const initialState = {
   validationError: false,

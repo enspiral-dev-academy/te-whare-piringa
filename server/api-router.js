@@ -5,11 +5,13 @@ const jwt = require('express-jwt')
 const jwksRsa = require('jwks-rsa')
 
 const db = require('./db')
-const { authDomain, authClientId } = require('../shared/vars')
+const { authClientId } = require('../shared/vars')
+const { authDomain } = require('../shared/config')
 const {
   sendBookingRequest,
   sendBookingConfirmation,
-  sendDeletionRequest
+  sendDeletionRequest,
+  sendDeletionConfirmation
 } = require('./email')
 
 const router = express.Router()
@@ -126,6 +128,7 @@ router.put('/user/requestdelete', (req, res) => {
 })
 
 router.delete('/admin/delete', (req, res) => {
+  // TODO: call sendDeletionConfirmation in here
   const authId = getUserIdFromToken(req)
   db.deleteBooking(req.body, authId)
     .then(({ result, booking }) => res.json({ result, booking }))

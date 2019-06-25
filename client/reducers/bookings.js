@@ -1,4 +1,4 @@
-import {RECEIVE_BOOKINGS} from '../actions'
+import { RECEIVE_BOOKINGS } from '../actions'
 
 const initialState = []
 

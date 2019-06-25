@@ -1,4 +1,4 @@
-import {ADMINSUCCESS} from '../actions/index'
+import { ADMINSUCCESS } from '../actions/index'
 const initialState = false
 
 const adminSuccess = (state = initialState, action) => {

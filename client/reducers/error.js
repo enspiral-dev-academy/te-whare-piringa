@@ -1,4 +1,4 @@
-import {ERROR} from '../actions'
+import { ERROR } from '../actions'
 
 const initialState = false
 

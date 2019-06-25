@@ -1,4 +1,4 @@
-import {BOOKINGPOSTED} from '../actions/index'
+import { BOOKINGPOSTED } from '../actions/index'
 const initialState = {}
 
 const booking = (state = initialState, action) => {

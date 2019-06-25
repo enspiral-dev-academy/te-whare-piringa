@@ -28,7 +28,11 @@ Run the app with `npm run dev` and it will be running on [http://localhost:3000]
 
 ## Deployment
 
-Run script to create environment variables
+Run this script to create environment variables: `npm run deploy-env-vars`
+
+The application is hosted on Heroku at http://tewharepiringa.herokuapp.com.
+
+The application is deployed every time code is pushed to the `master` branch.
 
 _more forthcoming..._
 
