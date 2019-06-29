@@ -2,8 +2,8 @@ import auth0 from 'auth0-js'
 
 import history from './utils/history'
 
-import { authDomain } from '../shared/config'
-import { authClientId, callbackUrl } from '../shared/vars'
+import { callbackUrl } from '../shared/vars'
+import { authDomain, authClientId } from '../shared/config'
 
 const localStorage = global.window.localStorage
 
@@ -30,7 +30,7 @@ export default class Auth {
   }
 
   handleAuthentication (cb) {
-    this.auth0.icon = 'http://thebookingmanager.herokuapp.com/images/logo2.png'
+    this.auth0.icon = 'http://tewharepiringa.herokuapp.com/images/logo2.png'
     this.auth0.parseHash((err, authResult) => {
       if (authResult && authResult.accessToken && authResult.idToken) {
         this.setSession(authResult)

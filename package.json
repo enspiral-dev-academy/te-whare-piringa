@@ -7,13 +7,18 @@
   "author": "Enspiral Dev Academy",
   "license": "MIT",
   "scripts": {
-    "dev": "nodemon --watch server & webpack --watch",
+    "dev:build": "webpack --watch --config webpack.config.dev.js",
+    "dev:run": "nodemon --watch server",
+    "dev": "run-p dev:*",
     "test": "jest --verbose",
     "lint": "eslint client server shared test",
     "start": "node server",
-    "initdb": "node scripts/initdb",
-    "seed": "node scripts/add-test-bookings",
-    "postinstall": "webpack",
+    "db:init": "node scripts/initdb",
+    "db:start": "docker-compose up -d",
+    "db:stop": "docker-compose down",
+    "db:seed": "node scripts/add-test-bookings",
+    "prod:build": "webpack --config webpack.config.prod.js",
+    "postinstall": "run-p prod:build db:init",
     "deploy-env-vars": "node scripts/deploy-env-vars"
   },
   "engines": {
@@ -49,7 +54,6 @@
     "@babel/preset-react": "^7.0.0",
     "babel-loader": "^8.0.6",
     "cheerio": "^1.0.0-rc.3",
-    "dotenv-webpack": "^1.7.0",
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.14.0",
     "eslint": "^5.16.0",
@@ -61,6 +65,7 @@
     "eslint-plugin-standard": "^4.0.0",
     "jest": "^24.8.0",
     "nodemon": "^1.19.1",
+    "npm-run-all": "^4.1.5",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-datetime": "^2.16.3",
@@ -76,6 +81,7 @@
     "supertest": "^4.0.2",
     "webpack": "^4.35.0",
     "webpack-cli": "^3.3.4",
-    "webpack-dev-server": "^3.7.2"
+    "webpack-dev-server": "^3.7.2",
+    "webpack-merge": "^4.2.1"
   }
 }
