@@ -37,6 +37,11 @@ const saveUsers = () => {
     .then(db => db.collection(usersCollectionName).insertMany(users))
 }
 
+console.log('mongoDbUri', mongoDbUri)
+console.log('databaseName', databaseName)
+console.log('adminUserId', adminUserId)
+console.log('testUserId', testUserId)
+
 saveUsers()
   .then(_ => {
     // eslint-disable-next-line no-console
