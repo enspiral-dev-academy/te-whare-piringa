@@ -2,8 +2,8 @@ const path = require('path')
 require('dotenv').config({ path: path.join(__dirname, '..', '.env') })
 const MongoClient = require('mongodb').MongoClient
 
-const { mongoDbUri, adminUserId, testUserId } = require('../shared/vars')
 const { databaseName, usersCollectionName } = require('../shared/config')
+const { mongoDbUri, adminUserId, testUserId } = require('../shared/vars')
 
 const client = new MongoClient(mongoDbUri, { useNewUrlParser: true })
 

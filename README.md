@@ -9,7 +9,11 @@
 
 1. Be sure you have Docker and Docker Compose installed.
 
-1. Rename `.env.example` to `.env` and edit it to have the correct values.
+1. Rename `.env.example` to `.env` and edit it to have the correct values. Here is the information you'll need to have:
+
+  1. The username and password for the database on [mLab](https://mlab.com) account. You must also create a database whose name matches the `databaseName` property in `shared/config.js` (e.g. `te-whare-piringa`).
+  1. The Mailgun API Key from the [mailgun](https://mailgun.com) account.
+  1. The admin and testuser account IDs from the [Auth0](https://auth0.com) account.
 
 1. Start the MongoDB database using `npm run db:start` and use `npm run db:stop` to stop the database. These commands must be run in the terminal from the project's root folder.
 

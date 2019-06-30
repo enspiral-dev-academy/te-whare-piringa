@@ -5,10 +5,11 @@ require('dotenv').config({ path: path.join(__dirname, '..', '.env') })
 const exec = require('child_process').exec
 
 const herokuCommand = `heroku config:set --app tewharepiringa \
+MONGODB_URI=${process.env.PROD_MONGODB_URI} \
 MAILGUN_API_KEY=${process.env.MAILGUN_API_KEY} \
 ADMIN_USER_ID="${process.env.ADMIN_USER_ID}" \
 TEST_USER_ID="${process.env.TEST_USER_ID}" \
-CALLBACK_URL=http://tewharepiringa.nz/callback`
+CALLBACK_URL=${process.env.PROD_CALLBACK_URL}`
 
 exec(herokuCommand, (err, buffer) => {
   if (err) {

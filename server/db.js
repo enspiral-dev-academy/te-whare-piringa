@@ -2,6 +2,7 @@ const ObjectId = require('mongodb').ObjectID
 const MongoClient = require('mongodb').MongoClient
 
 const { mongoDbUri } = require('../shared/vars')
+const { databaseName } = require('../shared/config')
 const {
   validateUserDetails,
   validateBookingDetails,
@@ -72,7 +73,7 @@ function saveBooking (booking, authId) {
 
 function getDatabase () {
   return MongoClient.connect(mongoDbUri)
-    .then(db => db.db('te-whare-piringa'))
+    .then(db => db.db(databaseName))
 }
 
 function addUser (user) {
