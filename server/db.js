@@ -1,8 +1,7 @@
 const ObjectId = require('mongodb').ObjectID
 const MongoClient = require('mongodb').MongoClient
 
-const { mongoDbUri } = require('../shared/vars')
-const { databaseName } = require('../shared/config')
+const { databaseName, mongoDbUri } = require('../shared/vars')
 const {
   validateUserDetails,
   validateBookingDetails,

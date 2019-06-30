@@ -2,10 +2,19 @@ const path = require('path')
 require('dotenv').config({ path: path.join(__dirname, '..', '.env') })
 const MongoClient = require('mongodb').MongoClient
 
-const { databaseName, usersCollectionName } = require('../shared/config')
-const { mongoDbUri, adminUserId, testUserId } = require('../shared/vars')
+const { usersCollectionName } = require('../shared/config')
+const {
+  mongoDbUri,
+  databaseName,
+  adminUserId,
+  testUserId } = require('../shared/vars')
 
 const client = new MongoClient(mongoDbUri, { useNewUrlParser: true })
+
+const getDatabase = () => {
+  return client.connect()
+    .then(conn => conn.db(databaseName))
+}
 
 const users = [
   { // admin
@@ -23,6 +32,11 @@ const users = [
   }
 ]
 
+const saveUsers = () => {
+  return getDatabase()
+    .then(db => db.collection(usersCollectionName).insertMany(users))
+}
+
 saveUsers()
   .then(_ => {
     // eslint-disable-next-line no-console
@@ -34,13 +48,3 @@ saveUsers()
     client.close()
   })
   .finally(() => client.close())
-
-function saveUsers () {
-  return getDatabase()
-    .then(db => db.collection(usersCollectionName).insertMany(users))
-}
-
-function getDatabase () {
-  return client.connect()
-    .then(conn => conn.db(databaseName))
-}
