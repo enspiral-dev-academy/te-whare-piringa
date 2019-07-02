@@ -13,7 +13,7 @@
     "test": "jest --verbose",
     "lint": "eslint client server shared test",
     "start": "node server",
-    "db:init": "node scripts/init-db",
+    "db:init:dev": "node scripts/init-dev-db",
     "db:init:prod": "node scripts/init-prod-db",
     "db:start": "docker-compose up -d",
     "db:stop": "docker-compose down",
