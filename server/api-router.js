@@ -1,12 +1,10 @@
 const express = require('express')
-const bodyParser = require('body-parser')
 const jsonwt = require('jsonwebtoken')
 const jwt = require('express-jwt')
 const jwksRsa = require('jwks-rsa')
 
 const db = require('./db')
-const { authClientId } = require('../shared/vars')
-const { authDomain } = require('../shared/config')
+const { authDomain, apiAudience } = require('../shared/config')
 const {
   sendBookingRequest,
   sendBookingConfirmation,
@@ -15,7 +13,7 @@ const {
 } = require('./email')
 
 const router = express.Router()
-router.use(bodyParser.json())
+router.use(express.json())
 module.exports = router
 
 router.get('/getbookings', (req, res) => {
@@ -35,7 +33,7 @@ const checkJwt = jwt({
   }),
 
   // Validate the audience and the issuer.
-  audience: authClientId,
+  audience: apiAudience,
   issuer: `https://${authDomain}/`,
   algorithms: ['RS256']
 })
