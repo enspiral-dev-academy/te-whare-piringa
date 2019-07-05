@@ -1,7 +1,8 @@
 const { getClient, getDatabase, saveUsers, users } = require('./initdb')
-const { prodMongoDbUri, prodDatabaseName } = require('../shared/vars')
+const { prodMongoDbUri } = require('../shared/vars')
+const { databaseName } = require('../shared/config')
 
-const client = getClient(prodMongoDbUri, prodDatabaseName)
+const client = getClient(prodMongoDbUri, databaseName)
 
 getDatabase(client)
   .then(db => saveUsers(db, users))

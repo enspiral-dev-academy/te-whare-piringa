@@ -1,5 +1,6 @@
 const { getClient, saveUsers, users } = require('./initdb')
-const { mongoDbUri, databaseName } = require('../shared/vars')
+const { databaseName } = require('../shared/config')
+const { mongoDbUri } = require('../shared/vars')
 
 const client = getClient(mongoDbUri)
 

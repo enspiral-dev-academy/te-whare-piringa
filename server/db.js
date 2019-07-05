@@ -72,7 +72,7 @@ function saveBooking (booking, authId) {
 
 function getDatabase () {
   return MongoClient.connect(mongoDbUri)
-    .then(db => db.db(databaseName))
+    .then(client => client.db(databaseName))
 }
 
 function addUser (user) {
