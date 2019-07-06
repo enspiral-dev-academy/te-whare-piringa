@@ -19,8 +19,8 @@
     "db:stop": "docker-compose down",
     "db:seed": "node scripts/add-test-bookings",
     "prod:build": "webpack --config webpack.config.prod.js",
-    "heroku-postbuild": "run-p prod:build db:init:prod",
-    "deploy-env-vars": "node scripts/deploy-env-vars"
+    "deploy-env-vars": "node scripts/deploy-env-vars",
+    "postinstall": "run-p prod:build"
   },
   "engines": {
     "node": ">=12"
