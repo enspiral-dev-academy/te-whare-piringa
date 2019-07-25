@@ -4,24 +4,29 @@ const { openingHour, closingHour } = require('./config')
 
 function validateBookingDetails (booking) {
   if (!booking) return 'No booking details found'
-  if (!booking.fullName) return 'Please enter the contact person\'s name'
-  if (!booking.emailAddress) return 'Please enter a contact email address'
-  if (!booking.phoneNumber) return 'Please enter a contact phone number'
   if (!booking.purpose) return 'Please enter the purpose for the booking'
   if (!booking.startDate) return 'Please enter the time and date you want the booking from'
   if (!booking.endDate) return 'Please enter the time and date you want the booking until'
   const startDate = new Date(booking.startDate)
   const endDate = new Date(booking.endDate)
-  if (Object.prototype.toString.call(new Date(startDate)) !== '[object Date]') return 'Please end a start date/time which is in the correct format'
-  if (Object.prototype.toString.call(new Date(endDate)) !== '[object Date]') return 'Please end an end date/time which is in the correct format'
+  if (new Date(startDate).toString() === 'Invalid Date') {
+    return 'Please ensure the start date/time is in the correct format'
+  }
+  if (new Date(endDate).toString() === 'Invalid Date') {
+    return 'Please ensure the end date/time is in the correct format'
+  }
   if (startDate < new Date()) return 'You cannot use a start date/time in the past'
   if (startDate > endDate) return 'Please enter an end date/time that is after the start date/time'
-  if ((startDate.getMinutes() !== 0 && startDate.getMinutes() !== 30) || startDate.getSeconds() !== 0 || startDate.getMilliseconds() !== 0) return 'Please enter a start date/time that is either on the hour or on the half hour'
-  if ((endDate.getMinutes() !== 0 && endDate.getMinutes() !== 30) || endDate.getSeconds() !== 0 || endDate.getMilliseconds() !== 0) return 'Please enter an end date/time that is either on the hour or on the half hour'
+  if (!hasBeenRounded(startDate)) return 'Please enter a start date/time that is either on the hour or on the half hour'
+  if (!hasBeenRounded(endDate)) return 'Please enter an end date/time that is either on the hour or on the half hour'
   if (endDate < new Date(moment(startDate).add(1, 'hours'))) return 'The minimum booking length is one hour'
-  if (!checkEmailFormat(booking.emailAddress)) return 'Please enter a valid email address'
-  if (booking.phoneNumber.replace(/[^0-9]/g, '').length < 7) return 'Please enter a valid phone number'
   return 'ok'
+}
+
+function hasBeenRounded (date) {
+  const minutes = date.getMinutes()
+  return (minutes === 0 || minutes === 30) &&
+    date.getSeconds() === 0 && date.getMilliseconds() === 0
 }
 
 function validateAgainstOpenHours (booking) {
@@ -64,13 +69,13 @@ function checkEmailFormat (email) {
 function checkBookingForOverlap (booking, bookings) {
   bookings = bookings.filter(booking => !booking.deleteRequested)
   const startDate1 = new Date(booking.startDate)
-  const endDate1 = new Date(booking.endDate).getTime()
+  const endDate1 = new Date(booking.endDate)
   if (bookings.find(compareHours)) return 'Your request overlaps with another booking'
   return 'ok'
 
   function compareHours (existingBooking) {
-    const startDate2 = new Date(existingBooking.startDate).getTime()
-    const endDate2 = new Date(existingBooking.endDate).getTime()
+    const startDate2 = new Date(existingBooking.startDate)
+    const endDate2 = new Date(existingBooking.endDate)
     return (endDate1 > startDate2 && (startDate1 < startDate2 || endDate1 <= endDate2)) || (startDate1 < endDate2 && (endDate1 > endDate2 || startDate1 >= startDate2))
   }
 }
