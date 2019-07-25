@@ -1,4 +1,4 @@
-const { getClient, getDatabase, saveUsers, users } = require('./initdb')
+const { getClient, getDatabase, saveUsers, users } = require('../shared/db')
 const { prodMongoDbUri } = require('../shared/vars')
 const { databaseName } = require('../shared/config')
 
