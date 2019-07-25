@@ -1,23 +1,19 @@
 import request from 'superagent'
 
-const localStorage = global.window.localStorage
+import { getAuthorizationHeader } from 'authenticare/client'
+
 const baseUrl = '/api/v1'
 
-export function login (method = 'get', endpoint, data = {}) {
+export function makeRequest (endpoint, method = 'get', data = {}) {
   const dataMethod = method.toLowerCase() === 'get' ? 'query' : 'send'
-  const token = localStorage.getItem('id_token')
-  const headers = {
+  const acceptJsonHeader = {
     Accept: 'application/json'
   }
-  headers['Authorization'] = `Bearer ${token}`
+
   return request[method](baseUrl + endpoint)
-    .set(headers)[dataMethod](data)
+    .set(getAuthorizationHeader())
+    .set(acceptJsonHeader)[dataMethod](data)
     .catch(err => {
       throw err
     })
-}
-
-// TODO: remove this function - not needed
-export function getAllBookings () {
-  return request.get('/api/v1/getbookings')
 }

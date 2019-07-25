@@ -1,4 +1,4 @@
-import { login, getAllBookings } from '../api'
+import { makeRequest } from '../api'
 import { receiveBookings, WAITING, NOT_WAITING } from './index'
 
 const localStorage = global.window.localStorage
@@ -8,14 +8,14 @@ export function checkLogin (redirect) {
     dispatch(gettingData())
     if (!localStorage.getItem('id_token')) {
       dispatch(noUserExists())
-      getAllBookings()
+      return makeRequest('/getbookings')
         .then(res => {
           dispatch(receivedData())
           return dispatch(receiveBookings(res.body.bookings))
         })
     } else {
       dispatch(checkingLogin())
-      return login('get', '/checklogin')
+      return makeRequest('/checklogin')
         .then(res => {
           if (!res.body.user) {
             res.body.error && console.error(res.body.error)
@@ -66,7 +66,7 @@ function loggedIn (user, bookings) {
 export function submitRegistration (registrationInfo, redirect) {
   return dispatch => {
     dispatch(gettingData())
-    login('post', '/user/adduser', registrationInfo)
+    makeRequest('/user/adduser', 'post', registrationInfo)
       .then(res => {
         dispatch(receivedData())
         if (res.body.user) {
@@ -95,11 +95,6 @@ export function logout () {
     localStorage.removeItem('expires_at')
     dispatch(loggedOut())
     dispatch(gettingData())
-    getAllBookings()
-      .then(res => {
-        dispatch(receivedData())
-        return dispatch(receiveBookings(res.body.bookings))
-      })
   }
 }
 

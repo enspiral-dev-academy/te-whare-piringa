@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 
 import Login from './Login'
-import Logout from './Logout'
 import Waiting from './Waiting'
 
 // let responsiveMenu = null
@@ -41,7 +40,7 @@ class Navigation extends React.Component {
               {this.props.user.fullName && !this.props.user.admin && <Link className="navigation-list-link" to="/profile"><li className="navigation-list-item">Profile</li></Link>}
               {this.props.user.admin && <Link className="navigation-list-link" to="/admin"><li className="navigation-list-item">Admin</li></Link>}
               {!this.props.user.fullName && <a className="navigation-list-link" style={{ cursor: 'pointer' }}><Login /></a>}
-              {this.props.user.fullName && <a className="navigation-list-link" style={{ cursor: 'pointer' }}><Logout /></a>}
+              {this.props.user.fullName && <a className="navigation-list-link" style={{ cursor: 'pointer' }}>logout</a>}
             </ul>
           </div>
         </nav>

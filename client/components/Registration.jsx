@@ -1,7 +1,7 @@
 import React from 'react'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 
-import {submitRegistration} from '../actions/auth'
+import { submitRegistration } from '../actions/auth'
 
 class Registration extends React.Component {
   constructor (props) {

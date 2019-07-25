@@ -1,4 +1,4 @@
-import { login } from '../api'
+import { makeRequest } from '../api'
 
 export const BOOKINGPOSTED = 'BOOKINGPOSTED'
 export const RECEIVE_BOOKINGS = 'RECEIVE_BOOKINGS'
@@ -14,31 +14,15 @@ export const CLEAR_ERROR = 'CLEAR_ERROR'
 export function newBooking (data) {
   return dispatch => {
     dispatch(gettingData())
-    login('post', '/user/addbooking', data)
+    makeRequest('/user/addbooking', 'post', data)
       .then(res => {
         if (res.body.error) return dispatch(errorHandler(res.body.error))
         dispatch(bookingPosted(res.body.booking))
         dispatch(receiveBookings(res.body.bookings))
         dispatch(receivedData())
-        // sendEmail(res.body.booking)
       })
   }
 }
-
-// function sendEmail (data) {
-//   login('post', '/sendemail', data)
-//     .then(f => f)
-// }
-
-// function sendConfirm (data) {
-//   login('post', '/sendconfirm/', data)
-//     .then(f => f)
-// }
-
-// function deleteEmail (data) {
-//   login('post', '/deleteemail', data)
-//     .then(f => f)
-// }
 
 function bookingPosted (booking) {
   booking.startDate = new Date(booking.startDate)
@@ -84,14 +68,11 @@ export const receivedData = () => {
 export function confirm (id) {
   return dispatch => {
     dispatch(gettingData())
-    login('put', `/admin/confirm/${id}`)
+    makeRequest(`/admin/confirm/${id}`, 'put')
       .then(res => {
         dispatch(receivedData())
         if (res.body.result) {
           res.body.bookings.find(item => {
-            // if (item._id === id) {
-            //   dispatch(sendConfirm(item))
-            // }
             dispatch(receiveBookings(res.body.bookings))
           })
         }
@@ -102,7 +83,7 @@ export function confirm (id) {
 export function deleteBooking (booking) {
   return dispatch => {
     dispatch(gettingData())
-    login('delete', '/admin/delete/', booking)
+    makeRequest('/admin/delete/', 'delete', booking)
       .then(res => {
         dispatch(receivedData())
         if (res.body.result) {
@@ -115,7 +96,7 @@ export function deleteBooking (booking) {
 export function makeAdmin (email) {
   return dispatch => {
     dispatch(gettingData())
-    login('put', `/admin/makeadmin/${email}`)
+    makeRequest(`/admin/makeadmin/${email}`, 'put')
       .then(res => {
         dispatch(receivedData())
         dispatch(adminSuccess(res))
@@ -140,12 +121,9 @@ export function selectBooking (booking) {
 export function requestDelete (booking) {
   return dispatch => {
     dispatch(gettingData())
-    login('put', '/user/requestdelete/', booking)
+    makeRequest('/user/requestdelete/', 'put', booking)
       .then(res => {
         dispatch(receivedData())
-        // if (res.body.sendEmail) {
-        //   deleteEmail(booking)
-        // }
         if (res.body.bookings) {
           return dispatch(receiveBookings(res.body.bookings))
         }
@@ -156,7 +134,7 @@ export function requestDelete (booking) {
 export function emailAlertChange (email) {
   return dispatch => {
     dispatch(gettingData())
-    login('put', '/admin/notificationemail', email)
+    makeRequest('/admin/notificationemail', 'put', email)
       .then(res => {
         dispatch(receivedData())
         return dispatch(emailChanged(res))

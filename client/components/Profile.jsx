@@ -1,9 +1,9 @@
 import React from 'react'
-import {connect} from 'react-redux'
 import moment from 'moment'
+import { connect } from 'react-redux'
 
 import DetailsProfile from './DetailsProfile'
-import {selectBooking, requestDelete} from '../actions/index'
+import { selectBooking, requestDelete } from '../actions/index'
 
 class Profile extends React.Component {
   constructor (props) {
