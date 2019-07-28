@@ -1,0 +1,463 @@
+{
+	"info": {
+		"_postman_id": "793ce89f-8c34-4bd5-887f-9796ecf17e05",
+		"name": "Te Whare Piringa",
+		"description": "The API that supports the frontend of the Te Whare Piringa Booking App.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "/bookings (no auth)",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{rooturl}}/api/v1/bookings",
+					"host": [
+						"{{rooturl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"bookings"
+					]
+				},
+				"description": "Gets all bookings. No auth needed."
+			},
+			"response": []
+		},
+		{
+			"name": "/auth/signin (testuser)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "52afd09f-4ac9-4fc4-b0db-b28a4fe782dc",
+						"exec": [
+							"pm.environment.set(\"token\", pm.response.json().token)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\": \"testuser\",\n\t\"password\": \"testuser\"\n}"
+				},
+				"url": {
+					"raw": "{{rooturl}}/api/v1/auth/signin",
+					"host": [
+						"{{rooturl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"auth",
+						"signin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/bookings (user)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{rooturl}}/api/v1/bookings",
+					"host": [
+						"{{rooturl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"bookings"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/auth/signin (admin)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "52afd09f-4ac9-4fc4-b0db-b28a4fe782dc",
+						"exec": [
+							"pm.environment.set(\"token\", pm.response.json().token)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\": \"admin\",\n\t\"password\": \"admin\"\n}"
+				},
+				"url": {
+					"raw": "{{rooturl}}/api/v1/auth/signin",
+					"host": [
+						"{{rooturl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"auth",
+						"signin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/bookings (admin)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{rooturl}}/api/v1/bookings",
+					"host": [
+						"{{rooturl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"bookings"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/auth/register",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6f91f761-e67a-4a3d-8eff-a7f7b3bdc73b",
+						"exec": [
+							"pm.environment.set(\"token\", pm.response.json().token)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\": \"postman\",\n\t\"password\": \"postman\",\n\t\"fullName\": \"Postman user\",\n\t\"emailAddress\": \"postman@users.io\",\n\t\"phoneNumber\": \"111 222 333\"\n}"
+				},
+				"url": {
+					"raw": "{{rooturl}}/api/v1/auth/register",
+					"host": [
+						"{{rooturl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"auth",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/bookings",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "77f3bfea-7860-43f1-bc04-2b6de1d4cbaf",
+						"exec": [
+							"const startDateTime = new Date()",
+							"startDateTime.setDate(startDateTime.getDate() + 3)",
+							"startDateTime.setHours(9, 0, 0, 0)",
+							"",
+							"pm.environment.set(",
+							"    'startDateTime',",
+							"    startDateTime.toISOString()",
+							")",
+							"",
+							"const endDateTime = new Date()",
+							"endDateTime.setDate(endDateTime.getDate() + 3)",
+							"endDateTime.setHours(19, 0, 0, 0)",
+							"",
+							"pm.environment.set(",
+							"    'endDateTime',",
+							"    endDateTime.toISOString()",
+							")"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "f9285583-307e-4e01-b1bf-c0540f2cd083",
+						"exec": [
+							"pm.environment.set(",
+							"    \"activebooking\",",
+							"    pm.response.json().booking._id",
+							")"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"purpose\": \"postman testing\",\n\t\"startDate\": \"{{startDateTime}}\",\n\t\"endDate\": \"{{endDateTime}}\"\n}"
+				},
+				"url": {
+					"raw": "{{rooturl}}/api/v1/bookings",
+					"host": [
+						"{{rooturl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"bookings"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/bookings/mine",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{rooturl}}/api/v1/bookings/mine",
+					"host": [
+						"{{rooturl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"bookings",
+						"mine"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/bookings/confirm",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{rooturl}}/api/v1/bookings/confirm/{{activebooking}}",
+					"host": [
+						"{{rooturl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"bookings",
+						"confirm",
+						"{{activebooking}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/api/v1/bookings",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"_id\": \"{{activebooking}}\"\n}"
+				},
+				"url": {
+					"raw": "{{rooturl}}/api/v1/bookings",
+					"host": [
+						"{{rooturl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"bookings"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "3513c5ee-2f2f-4a4d-9364-16f982b3fd2e",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "53d93a0f-0221-4fef-8916-a04702e9879e",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "ec35b82b-36e6-429c-b163-692be4f896fb",
+			"key": "token",
+			"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IlFqTTBRVEpGUWpKQ056RTNRVFkwTmpRME1UWTVSRGxDTnpjMVJUWXpPVVF6TkRreU5FUTNOUSJ9.eyJpc3MiOiJodHRwczovL2FudGlhbnRvbnltLmF1dGgwLmNvbS8iLCJzdWIiOiJhdXRoMHw1ZDA4OWRjNTRmNjQ1NzBlYTVhNzYxYjEiLCJhdWQiOiJrcjg0MWM1RzFpRXUwNWZoMHM2U0N4aVlGc3JYU0R2TSIsImlhdCI6MTU2MDg1MTM3MSwiZXhwIjoxNTYwODg3MzcxLCJhdF9oYXNoIjoiMVozdmJfekVBS1g4LWdUUDlQQmJfdyIsIm5vbmNlIjoiNVJOa3loSGhMZnA5aTR1cHBZcnZJeVNyT0x6RW85a2IifQ.Hl_e2k9iaeuN0tuqdZqzC7orwzLwLphC6DTlopTZnu3exRc6s6qoBpUSOAq4LG67k3Yg8zina7cCiI7wveazsgvfHR-K0AUMXDSwzv8pYsDI1dy1gj6GeM_sIf59MKrKQEr_2zCr_jp7CBxH--bcmIObHdgEwpyEQTSI8BF96o95bufZYRmtW5ES8K80Z-F-kgnkbLBeX4-uUkgl02r4Yc8PjhMt3wqCu4aiuxytp2IOo9TG5eFBqlRU9zeXrxMVMmwyRilrYf5mKdJyAR9aad6UU-rUX71kC37k4gFBs_8Jy3ARiUeYyujQ7iFyvyfYjqU0VuXCcycqwhTkhnkneg",
+			"type": "string"
+		}
+	]
+}
