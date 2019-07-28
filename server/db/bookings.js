@@ -11,6 +11,16 @@ function getDb () {
   return getDatabase(mongoDbUrl, databaseName)
 }
 
+function getBookingsCollection () {
+  return getDb()
+    .then(db => db.collection('bookings'))
+}
+
+function getBookingById (id) {
+  return getBookingsCollection()
+    .then(bookings => bookings.findOne({ _id: ObjectId(id) }))
+}
+
 function getAllBookings () {
   // TODO: filter out bookings older than a month
   return getDb()
@@ -31,8 +41,8 @@ function removeDetails ({ startDate, endDate, confirmed }) {
 }
 
 function getUserBookings (requesterUsername) {
-  return getDb()
-    .then(db => db.collection('bookings').find({ requesterUsername }).toArray())
+  return getBookingsCollection()
+    .then(bookings => bookings.find({ requesterUsername }).toArray())
 }
 
 function addBooking (booking, username) {
@@ -60,48 +70,47 @@ function initialiseBooking (booking) {
 }
 
 function saveBooking (booking, username) {
-  return getDb()
-    .then(db => {
-      return db.collection('bookings').insertOne(booking)
-        .then(() => getUserBookings(username)
-          .then(bookings => ({ booking, bookings }))
-        )
-    })
+  return getBookingsCollection()
+    .then(bookings => bookings.insertOne(booking)
+      .then(() => getUserBookings(username)
+        .then(bookings => ({ booking, bookings }))
+      )
+    )
 }
 
 function confirmBooking (objectId) {
-  return getDb()
-    .then(db => db.collection('bookings')
-      .updateOne({ _id: ObjectId(objectId) }, { $set: { confirmed: true } })
-      .then(() => getAllBookings())
-    )
+  return getBookingsCollection()
+    .then(bookings => bookings.updateOne(
+      { _id: ObjectId(objectId) },
+      { $set: { confirmed: true } }))
+    .then(() => getAllBookings())
 }
 
-function requestDelete (booking, authId) {
-  return getDb()
-    .then(db => {
-      if (booking.confirmed) {
-        return db.collection('bookings')
-          .updateOne(
-            { _id: ObjectId(booking._id) },
-            { $set: { 'deleteRequested': true } }
-          )
-          .then(result => getUserBookings(authId)
-            .then(bookings => ({ result, bookings, sendEmail: true }))
-          )
-      } else {
-        return deleteBooking(booking, authId)
-          .then(result => ({ result, booking }))
-      }
-    })
+function requestDelete (bookingId, username) {
+  return getBookingById(bookingId)
+    .then(booking => getBookingsCollection()
+      .then(bookings => booking.confirmed
+        ? bookings.updateOne( // because it's confirmed, request a delete
+          { _id: ObjectId(bookingId) },
+          { $set: { 'deleteRequested': true } }
+        )
+        : bookings.deleteOne( // since it isn't confirmed, just delete it
+          { _id: ObjectId(bookingId) }
+        )
+      )
+    )
+    .then(() => getUserBookings(username))
 }
 
-function deleteBooking (booking, authId) {
-  return getDb()
-    .then(db => db.collection('bookings').remove({ _id: ObjectId(booking._id) }))
-    .then(result => getUserBookings(authId)
-      .then(bookings => ({ result, bookings }))
-    )
+function deleteBooking (bookingId, username) {
+  return getBookingsCollection()
+    .then(bookings => bookings.deleteOne({ _id: ObjectId(bookingId) }))
+    // or?
+    // bookings.updateOne(
+    //   { _id: ObjectId(booking._id) },
+    //   { $set: { 'deleted': true } }
+    // )
+    .then(() => getUserBookings(username))
 }
 
 module.exports = {

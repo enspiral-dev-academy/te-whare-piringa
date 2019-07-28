@@ -61,35 +61,42 @@ router.get('/mine', (req, res) => {
 router.post('/', (req, res) => {
   addBooking(req.body, req.user.username)
     .then(bookings => res.json(bookings))
-    // .then(sendBookingRequest)
+    .then(sendBookingRequest)
     .catch(sendError(res))
 })
 
 // PUT /api/v1/bookings/confirm/:id
 router.put('/confirm/:id', (req, res) => {
-  // TODO: ensure user is an admin
-  confirmBooking(req.params.id)
-    .then(bookings => res.json(bookings))
-    // .then(sendBookingConfirmation)
-    .catch(sendError(res))
+  isAdmin(req.user.username)
+    .then(isAdmin => isAdmin
+      ? confirmBooking(req.params.id)
+        .then(bookings => res.json(bookings))
+        .then(sendBookingConfirmation)
+        .catch(sendError(res))
+      : res.status(404) // only admins can access this route
+    )
 })
 
-// PUT /api/v1/bookings
-router.put('/', (req, res) => {
-  requestDelete(req.body, req.user.id)
-    .then(({ result, booking }) => res.json({ result, booking }))
-    // .then(sendDeletionRequest)
-    .catch(sendError(res))
-})
-
+// DELETE /api/v1/bookings
 router.delete('/', (req, res) => {
-  // TODO: ensure user is an admin
-  deleteBooking(req.body, req.user.id)
-    .then(({ result, booking }) => res.json({ result, booking }))
-    // .then(sendDeletionConfirmation)
-    .catch(sendError(res))
+  const { _id: bookingId } = req.body
+  const { username } = req.user
+
+  isAdmin(username)
+    .then(isAdmin => isAdmin
+      ? deleteBooking(bookingId, username) // request is from an admin
+        .then(({ result, booking }) => res.json({ result, booking }))
+        .then(sendDeletionConfirmation)
+        .catch(sendError(res))
+      : requestDelete(bookingId, username) // request is from a user
+        .then(({ result, booking }) => res.json({ result, booking }))
+        .then(sendDeletionRequest)
+        .catch(sendError(res))
+    )
 })
 
 function sendError (res) {
-  return err => res.status(500).json({ error: err })
+  return err => {
+    res.status(500).json({ error: err.message })
+  }
 }

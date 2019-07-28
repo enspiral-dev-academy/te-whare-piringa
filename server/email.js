@@ -115,6 +115,9 @@ function sendDeletionConfirmation (booking, send = sendMail) {
 }
 
 function sendMail (details) {
+  // TODO: only send mail in production ... for now
+  if (process.env.NODE_ENV !== 'production') return
+
   const mg = mailgun({
     apiKey: mailgunApiKey,
     domain: mailgunDomainName

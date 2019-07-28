@@ -9,7 +9,7 @@ router.use(express.json())
 module.exports = router
 
 function sendError (res) {
-  return err => res.status(500).json({ error: err })
+  return err => res.status(500).json({ error: err.message })
 }
 
 // GET /api/v1/profile
