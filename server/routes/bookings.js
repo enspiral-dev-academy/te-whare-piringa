@@ -85,11 +85,11 @@ router.delete('/', (req, res) => {
   isAdmin(username)
     .then(isAdmin => isAdmin
       ? deleteBooking(bookingId, username) // request is from an admin
-        .then(({ result, booking }) => res.json({ result, booking }))
+        .then(bookings => res.json({ bookings }))
         .then(sendDeletionConfirmation)
         .catch(sendError(res))
       : requestDelete(bookingId, username) // request is from a user
-        .then(({ result, booking }) => res.json({ result, booking }))
+        .then(bookings => res.json({ bookings }))
         .then(sendDeletionRequest)
         .catch(sendError(res))
     )

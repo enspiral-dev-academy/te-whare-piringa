@@ -1,18 +1,18 @@
-const initialState = {
+import { NEW_BOOKING } from '../actions/bookings'
+
+const initialBooking = {
   startDate: new Date(),
   endDate: new Date()
 }
 
-const newBooking = (state = initialState, action) => {
+export default function (newBooking = initialBooking, action) {
   switch (action.type) {
-    case 'SET_BOOKING':
+    case NEW_BOOKING:
       return {
         startTime: action.startTime,
         endTime: action.endTime
       }
     default:
-      return state
+      return newBooking
   }
 }
-
-export default newBooking

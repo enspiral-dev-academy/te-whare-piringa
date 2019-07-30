@@ -1,14 +1,12 @@
-const initialState = false
+import { SENDING_REQUEST, GOT_RESPONSE } from '../actions/requests'
 
-const waiting = (state = initialState, action) => {
+export default function (waiting = false, action) {
   switch (action.type) {
-    case 'WAITING':
+    case SENDING_REQUEST:
       return true
-    case 'NOT_WAITING':
+    case GOT_RESPONSE:
       return false
     default:
-      return state
+      return waiting
   }
 }
-
-export default waiting

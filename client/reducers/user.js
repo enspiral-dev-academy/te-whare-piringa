@@ -1,18 +1,16 @@
-const initialState = {
-  fullName: null,
+const emptyUser = {
   email: null,
+  fullName: null,
   phoneNumber: null
 }
 
-const user = (state = initialState, action) => {
+export default function (user = emptyUser, action) {
   switch (action.type) {
     case 'LOGGED_IN':
       return action.user
     case 'LOGGED_OUT':
-      return initialState
+      return emptyUser
     default:
-      return state
+      return user
   }
 }
-
-export default user

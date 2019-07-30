@@ -1,14 +1,10 @@
-import { RECEIVE_BOOKINGS } from '../actions'
+import { RECEIVE_BOOKINGS } from '../actions/bookings'
 
-const initialState = []
-
-const bookings = (state = initialState, action) => {
+export default function (bookings = [], action) {
   switch (action.type) {
     case RECEIVE_BOOKINGS:
       return action.bookings
     default:
-      return state
+      return bookings
   }
 }
-
-export default bookings
