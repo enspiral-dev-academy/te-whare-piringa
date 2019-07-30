@@ -10,7 +10,7 @@ class Registration extends React.Component {
       fullName: '',
       phoneNumber: '',
       emailAddress: '',
-      authId: props.authId
+      password: ''
     }
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -27,7 +27,8 @@ class Registration extends React.Component {
     const registrationInfo = {
       fullName: this.state.fullName.trim(),
       phoneNumber: this.state.phoneNumber.trim(),
-      emailAddress: this.state.emailAddress.trim()
+      emailAddress: this.state.emailAddress.trim(),
+      password: this.state.password.trim()
     }
     this.props.submitRegistration(registrationInfo, this.props.history.push)
   }
@@ -36,11 +37,41 @@ class Registration extends React.Component {
     return (
       <div className='login-page'>
         <form onSubmit={this.handleSubmit}>
-          <h2>Please Enter Your Details</h2>
-          <p><input className='form-control' name='fullName' onChange={this.handleChange} placeholder='Full Name' /></p>
-          <p><input className='form-control' name='emailAddress' onChange={this.handleChange} placeholder='Contact Email Address' /></p>
-          <p><input className='form-control' name='phoneNumber' onChange={this.handleChange} placeholder='Contact Phone Number' /></p>
-          <p><button className='btn btn-primary' onClick={this.handleSubmit}>Register</button></p>
+          <h2>Register</h2>
+
+          <p>
+            <input name='fullName'
+              placeholder='Full Name'
+              className='form-control'
+              onChange={this.handleChange} />
+          </p>
+
+          <p>
+            <input name='phoneNumber'
+              placeholder='Phone Number'
+              className='form-control'
+              onChange={this.handleChange} />
+          </p>
+
+          <p>
+            <input name='emailAddress'
+              placeholder='Email Address'
+              className='form-control'
+              onChange={this.handleChange} />
+          </p>
+
+          <p>
+            <input name='password'
+              className='form-control'
+              placeholder='Password'
+              onChange={this.handleChange}
+              type='password' />
+          </p>
+
+          <p>
+            <button className='btn btn-primary'
+              onClick={this.handleSubmit}>Register</button>
+          </p>
         </form>
       </div>
     )

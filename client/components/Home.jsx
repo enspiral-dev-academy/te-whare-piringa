@@ -1,5 +1,5 @@
 import React from 'react'
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 import Hall from './Hall'
 import Gallery from './Gallery'
@@ -15,7 +15,7 @@ class Home extends React.Component {
           <div className="home-button-box">
             <h1>Te Whare Piringa</h1>
             <h2>Our Place</h2>
-            <p>"Tamaki, the most thriving, engaged, and dynamic community"</p>
+            <p>&quot;Tamaki, the most thriving, engaged, and dynamic community&quot;</p>
             <Link to="/calendar" className="home-book-link"><div className="home-book-button">Book Now</div></Link>
           </div>
         </div>

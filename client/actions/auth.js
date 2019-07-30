@@ -66,7 +66,7 @@ function loggedIn (user, bookings) {
 export function submitRegistration (registrationInfo, redirect) {
   return dispatch => {
     dispatch(gettingData())
-    makeRequest('/user/adduser', 'post', registrationInfo)
+    makeRequest('/auth/register', 'post', registrationInfo)
       .then(res => {
         dispatch(receivedData())
         if (res.body.user) {
