@@ -1,36 +1,33 @@
+import moment from 'moment'
+
 import { makeRequest } from '../api'
 import { showError } from './errors'
 import { sendingRequest, gotResponse } from './requests'
 
-export const NEW_BOOKING = 'NEW_BOOKING'
-export const BOOKING_ADDED = 'BOOKING_ADDED'
+export const SWITCH_DATE = 'SWITCH_DATE'
+export const START_BOOKING = 'START_BOOKING'
 export const RECEIVE_BOOKINGS = 'RECEIVE_BOOKINGS'
 
-export function getbookings (redirect) {
+export function getBookings () {
   return dispatch => {
     dispatch(sendingRequest())
     makeRequest('/bookings')
-      .then(res => {
-        dispatch(gotResponse())
-        return dispatch(receiveBookings(res.body.bookings))
-      })
-      .catch(err => {
-        dispatch(gotResponse())
-        showError(err)
-      })
+      .then(res => dispatch(receiveBookings(res.body)))
+      .catch(err => dispatch(showError(err)))
+      .finally(() => dispatch(gotResponse()))
   }
 }
 
-export function addBooking (data) {
+export function addBooking (booking) {
   return dispatch => {
     dispatch(sendingRequest())
-    makeRequest('/user/addbooking', 'post', data)
+    makeRequest('/bookings', 'post', booking)
       .then(res => {
-        if (res.body.error) return dispatch(showError(res.body.error))
-        dispatch(bookingAdded(res.body.booking))
+        dispatch(startBooking(res.body.booking))
         dispatch(receiveBookings(res.body.bookings))
-        dispatch(gotResponse())
       })
+      .catch(err => dispatch(showError(err)))
+      .finally(() => dispatch(gotResponse()))
   }
 }
 
@@ -39,13 +36,11 @@ export function confirmBooking (id) {
     dispatch(sendingRequest())
     makeRequest(`/bookings/confirm/${id}`, 'put')
       .then(res => {
-        dispatch(gotResponse())
-        if (res.body.result) {
-          res.body.bookings.find(item => {
-            dispatch(receiveBookings(res.body.bookings))
-          })
-        }
+        dispatch(startBooking(res.body.booking))
+        dispatch(receiveBookings(res.body.bookings))
       })
+      .catch(err => dispatch(showError(err)))
+      .finally(() => dispatch(gotResponse()))
   }
 }
 
@@ -53,32 +48,29 @@ export function deleteBooking (booking) {
   return dispatch => {
     dispatch(sendingRequest())
     makeRequest('/bookings', 'delete', booking)
-      .then(res => {
-        dispatch(gotResponse())
-        if (res.body.bookings) {
-          return dispatch(receiveBookings(res.body.bookings))
-        }
-      })
+      .then(res => dispatch(receiveBookings(res.body.bookings)))
+      .catch(err => dispatch(showError(err)))
+      .finally(() => dispatch(gotResponse()))
   }
 }
 
-export function bookingAdded (booking) {
+export function startBooking (booking) {
   return {
-    type: BOOKING_ADDED,
-    booking: {
-      startDate: new Date(booking.startDate),
-      endDate: new Date(booking.endDate)
-    }
+    type: START_BOOKING,
+    booking: booking
   }
 }
 
-export function receiveBookings (bookings) {
-  const cleanBookings = bookings.map(booking => {
-    booking.startDate = new Date(booking.startDate)
-    booking.endDate = new Date(booking.endDate)
-    return booking
-  })
-  cleanBookings.sort((a, b) => a.startDate.getTime() - b.startDate.getTime())
+export function receiveBookings (bookings = []) {
+  const cleanBookings = bookings.map(booking => ({
+    ...booking,
+    dateAdded: moment(booking.dateAdded._d),
+    startDate: moment(booking.startDate._d),
+    endDate: moment(booking.endDate._d)
+  }))
+
+  cleanBookings.sort((a, b) => a.startDate - b.startDate)
+
   return {
     type: RECEIVE_BOOKINGS,
     bookings: cleanBookings
@@ -87,14 +79,14 @@ export function receiveBookings (bookings) {
 
 export function switchDate (date) {
   return {
-    type: 'SWITCH_DATE',
+    type: SWITCH_DATE,
     date
   }
 }
 
 export function selectBooking (booking) {
   return {
-    type: BOOKING_ADDED,
+    type: START_BOOKING,
     booking
   }
 }

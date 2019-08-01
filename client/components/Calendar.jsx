@@ -1,8 +1,9 @@
 import React from 'react'
 import moment from 'moment'
 import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
 
-import { switchDate, setNewBooking } from '../actions/calendar'
+import { switchDate } from '../actions/bookings'
 import { numberOfIntervals } from '../utils/overlap'
 
 class Calendar extends React.Component {
@@ -14,32 +15,30 @@ class Calendar extends React.Component {
   }
 
   componentDidMount () {
-    if (window.localStorage.getItem('date')) {
-      this.props.switchDate(new Date(window.localStorage.getItem('date')))
-      this.props.setNewBooking(new Date(window.localStorage.getItem('startTime')), new Date(window.localStorage.getItem('endTime')))
-      window.localStorage.removeItem('startTime')
-      window.localStorage.removeItem('endTime')
-      window.localStorage.removeItem('date')
-      this.props.history.push('/schedule')
-    }
+    // if (window.localStorage.getItem('date')) {
+    //   this.props.switchDate(new Date(window.localStorage.getItem('date')))
+    //   this.props.setNewBooking(new Date(window.localStorage.getItem('startTime')), new Date(window.localStorage.getItem('endTime')))
+    //   window.localStorage.removeItem('startTime')
+    //   window.localStorage.removeItem('endTime')
+    //   window.localStorage.removeItem('date')
+    //   this.props.history.push('/schedule')
+    // }
   }
 
   previousMonth () {
-    const d = this.props.date
-    const newD = new Date(moment(d).subtract(1, 'months'))
-    this.props.switchDate(newD)
+    const previous = moment(this.props.date).subtract(1, 'months')
+    this.props.switchDate(previous)
   }
 
   nextMonth () {
-    const d = this.props.date
-    const newD = new Date(moment(d).add(1, 'months'))
-    this.props.switchDate(newD)
+    const next = moment(this.props.date).add(1, 'months')
+    this.props.switchDate(next)
   }
 
   selectDate (e) {
     const dateString = e.target.id.substr(3)
-    const dateSelected = new Date(moment(dateString, 'YYYY-MM-DD'))
-    if (!this.props.admin && dateSelected < new Date().setHours(0, 0, 0, 0)) return
+    const dateSelected = moment(dateString, 'YYYY-MM-DD')
+    if (!this.props.admin && moment().isAfter(dateSelected, 'day')) return
     this.props.switchDate(dateSelected)
     this.props.history.push('/schedule')
   }
@@ -86,86 +85,89 @@ class Calendar extends React.Component {
   }
 
   getDates (d, bookings) {
-    const firstDay = new Date(d.getFullYear(), d.getMonth(), 1).getDay()
-    const lastDate = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate()
-    const lastDay = new Date(d.getFullYear(), d.getMonth(), lastDate).getDay()
+    const date = moment([d.year(), d.month()])
+    const firstDay = moment(date).day(1).day()
+    const lastDate = moment(date).endOf('month').date()
+    const lastDay = moment([d.year(), d.month(), lastDate]).day()
+
+    let today = moment()
+    today = moment([today.year(), today.month(), today.date()])
 
     const dateArray = []
-    let today = new Date()
-    today = new Date(today.getFullYear(), today.getMonth(), today.getDate())
-
     const adminStyle = {}
     adminStyle.cursor = this.props.admin ? 'pointer' : null
 
     let i = 0
     while (i < firstDay) {
-      const thisDate = new Date(d.getFullYear(), d.getMonth(), 1 - firstDay + i)
-      const thisDateFormatted = moment(thisDate).format('YYYY-MM-DD')
-      let classNames = 'calendar-date last-month'
+      const thisDate = moment(date).day(firstDay - 1)
+      const thisDateFormatted = thisDate.format('YYYY-MM-DD')
+      const classNames = ['calendar-date', 'last-month']
 
-      if (thisDate.getTime() > today.getTime()) {
-        classNames += ' future'
+      if (thisDate.isAfter(today)) {
+        classNames.push('future')
       }
 
       dateArray.push(<div
         key={thisDateFormatted}
         id={'day' + thisDateFormatted}
-        className={classNames}
+        className={classNames.join(' ')}
         onClick={this.selectDate}
-        style={adminStyle}> {thisDate.getDate()} </div>
+        style={adminStyle}>{thisDate.date()}</div>
       )
       i++
     }
 
     i = 1
     while (i <= lastDate) {
-      const thisDate = new Date(d.getFullYear(), d.getMonth(), i)
-      const thisDateFormatted = moment(thisDate).format('YYYY-MM-DD')
-      let classNames = 'calendar-date this-month'
+      const thisDate = moment([d.year(), d.month(), i])
+      const thisDateFormatted = thisDate.format('YYYY-MM-DD')
+      const classNames = ['calendar-date', 'this-month']
 
-      if (thisDate.getTime() === today.getTime()) {
-        classNames += ' currentDay'
+      if (thisDate.isSame(today, 'day')) {
+        classNames.push('currentDay')
       }
 
-      if (thisDate.getTime() < today.getTime()) {
-        classNames += ' calendar-inactive'
+      if (thisDate.isBefore(today)) {
+        classNames.push('calendar-inactive')
       }
 
-      if (thisDate.getTime() >= today.getTime()) {
-        const thisBusy = howBusyIsIt(thisDate.getTime(), bookings)
-        classNames += [' calendar-orange', +thisBusy].join('')
+      if (thisDate.isSameOrAfter(today)) {
+        const thisBusy = howBusyIsIt(thisDate, bookings)
+        classNames.push('calendar-orange')
+        classNames.push(thisBusy)
       }
 
       dateArray.push(<div
         key={thisDateFormatted}
         id={'day' + thisDateFormatted}
-        className={classNames}
+        className={classNames.join(' ')}
         onClick={this.selectDate}
-        style={adminStyle}> {thisDate.getDate()} </div>
+        style={adminStyle}>{thisDate.date()}</div>
       )
       i++
     }
 
     i = 1
     while (i < 7 - lastDay) {
-      const thisDate = new Date(d.getFullYear(), d.getMonth() + 1, i)
-      const thisDateFormatted = moment(thisDate).format('YYYY-MM-DD')
-      let classNames = 'calendar-date next-month'
+      const thisDate = moment([d.year(), d.month() + 1, i])
+      const thisDateFormatted = thisDate.format('YYYY-MM-DD')
+      let classNames = ['calendar-date', 'next-month']
 
-      if (thisDate.getTime() < today.getTime()) {
-        classNames += ' calendar-inactive'
+      if (thisDate.isBefore(today)) {
+        classNames.push('calendar-inactive')
       }
 
-      if (thisDate.getTime() >= today.getTime()) {
-        const thisBusy = howBusyIsIt(thisDate.getTime(), bookings)
-        classNames += [' calendar-orange', +thisBusy].join('')
+      if (thisDate.isSameOrAfter(today)) {
+        const thisBusy = howBusyIsIt(thisDate, bookings)
+        classNames.push('calendar-orange')
+        classNames.push(thisBusy)
       }
 
       dateArray.push(<div
         key={thisDateFormatted}
         id={'day' + thisDateFormatted}
-        className={classNames}
-        onClick={this.selectDate}> {thisDate.getDate()} </div>
+        className={classNames.join(' ')}
+        onClick={this.selectDate}>{thisDate.date()}</div>
       )
       i++
     }
@@ -194,17 +196,17 @@ function howBusyIsIt (date, bookings) {
 
 function mapStateToProps (state) {
   return {
-    date: state.display.date,
+    date: state.date,
     bookings: state.bookings,
-    admin: state.user.admin
+    isAdmin: state.user.details && state.user.details.isAdmin
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    switchDate: date => dispatch(switchDate(date)),
-    setNewBooking: (start, end) => dispatch(setNewBooking(start, end))
+    switchDate: date => dispatch(switchDate(date))
+    // setNewBooking: (start, end) => dispatch(setNewBooking(start, end))
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Calendar)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Calendar))

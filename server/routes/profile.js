@@ -14,9 +14,9 @@ function sendError (res) {
 
 // GET /api/v1/profile
 router.get('/', getTokenDecoder(), (req, res) => {
-  getUserDetails(req.user.id)
+  getUserDetails(req.user.username)
     .then(user => {
-      return getUserBookings(user.id)
+      return getUserBookings(user.username)
         .then(bookings => res.json({ user, bookings }))
     })
     .catch(sendError(res))

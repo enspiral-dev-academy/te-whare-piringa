@@ -24,13 +24,15 @@ class Registration extends React.Component {
 
   handleSubmit (e) {
     e.preventDefault()
-    const registrationInfo = {
-      fullName: this.state.fullName.trim(),
-      phoneNumber: this.state.phoneNumber.trim(),
-      emailAddress: this.state.emailAddress.trim(),
-      password: this.state.password.trim()
-    }
-    this.props.submitRegistration(registrationInfo, this.props.history.push)
+    this.props.submitRegistration(
+      {
+        fullName: this.state.fullName.trim(),
+        phoneNumber: this.state.phoneNumber.trim(),
+        emailAddress: this.state.emailAddress.trim(),
+        password: this.state.password.trim()
+      },
+      () => this.props.history.push('/calendar')
+    )
   }
 
   render () {

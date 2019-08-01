@@ -315,7 +315,7 @@
 }
 
 /*so the components are visible without nav bar hiding the top part*/
-.admin-portal, .book-container, .callback-container, .error-container, .calendar, .profile-container, .login-page, .schedule, .settings-container {
+.admin-portal, .callback-container, .error-container, .calendar, .profile-container, .login-page, .schedule, .settings-container {
   margin-top: 60px;
 }
 

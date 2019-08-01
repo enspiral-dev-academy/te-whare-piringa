@@ -5,6 +5,7 @@ module.exports = {
   databaseName: 'te-whare-piringa',
   bookingsCollectionName: 'bookings',
   usersCollectionName: 'users',
+  apiBaseUrl: '/api/v1',
   openingHour: 6,
   closingHour: 22,
   minimumLength: 1,

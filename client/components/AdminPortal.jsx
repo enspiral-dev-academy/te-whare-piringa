@@ -1,9 +1,13 @@
 import React from 'react'
 import Modal from 'react-modal'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 
+import {
+  confirmBooking,
+  deleteBooking,
+  selectBooking
+} from '../actions/bookings'
 import Details from './Details'
-import {confirm, deleteBooking, selectBooking, requestDelete} from '../actions/index'
 import Setting from './Settings'
 
 const modalStyle = {
@@ -38,18 +42,20 @@ class AdminPortal extends React.Component {
   }
 
   settingShow () {
-    this.setState({showSettings: !this.state.showSettings})
+    this.setState({
+      showSettings: !this.state.showSettings
+    })
   }
 
   handleConfirmClick (id) {
-    this.props.confirm(id)
+    this.props.dispatch(confirmBooking(id))
     this.setState({
       modal: false
     })
   }
 
   handleDeleteClick (booking) {
-    this.props.deleteBooking(booking)
+    this.props.dispatch(deleteBooking(booking))
     this.setState({
       modal: false,
       sure: false
@@ -57,7 +63,7 @@ class AdminPortal extends React.Component {
   }
 
   saveBookingToStore (booking) {
-    this.props.selectBooking(booking)
+    this.props.dispatch(selectBooking(booking))
     this.setState({
       modal: true
     })
@@ -113,7 +119,7 @@ class AdminPortal extends React.Component {
             <div className="col-md-10">
               <h2>Bookings</h2>
               <div>
-                <p className="admin-radio-container">
+                <div className="admin-radio-container">
                   <div>
                     <input type="radio" name="filter" id="Show All" onClick={() => this.applyFilter('all') } />
                     &nbsp;
@@ -144,7 +150,7 @@ class AdminPortal extends React.Component {
                     <label htmlFor="Show History">History</label>
                     &nbsp;
                   </div>
-                </p>
+                </div>
               </div>
               <div className="unconfirmed-list">
                 {this.props.bookings.filter(this.isInFilter).map(item => {
@@ -184,7 +190,7 @@ class AdminPortal extends React.Component {
                   <div>
                     <h3>Details</h3>
                     <Details />
-                    {!this.props.admin && !this.state.sure && <div className="text-center"> <button onClick={() => this.setState({sure: true})}>Request Delete</button></div>}
+                    {!this.props.admin && !this.state.sure && <div className="text-center"> <button onClick={() => this.setState({ sure: true })}>Request Delete</button></div>}
                     {!this.props.admin && this.state.sure &&
                       <div className="text-center">
                         <p className="sure">Are you sure?</p>
@@ -196,7 +202,7 @@ class AdminPortal extends React.Component {
                         {!this.state.sure &&
                           <div className="text-center">
                             {!this.props.booking.confirmed && <span className="glyphicon glyphicon-ok confirm" onClick={() => { this.handleConfirmClick(this.props.booking._id) }}></span>}
-                            <span className="glyphicon glyphicon-trash remove" onClick={() => this.setState({sure: true})}></span>
+                            <span className="glyphicon glyphicon-trash remove" onClick={() => this.setState({ sure: true })}></span>
                           </div>
                         }
                         {this.state.sure &&
@@ -221,6 +227,7 @@ class AdminPortal extends React.Component {
 
 function mapStateToProps (state) {
   return {
+    // TODO: this filter looks fishy (truthy authId?)
     bookings: state.bookings.filter(booking => booking.authId),
     admin: state.user.admin,
     booking: state.booking,
@@ -228,13 +235,4 @@ function mapStateToProps (state) {
   }
 }
 
-function mapDispatchToProps (dispatch) {
-  return {
-    confirm: id => { dispatch(confirm(id)) },
-    deleteBooking: id => { dispatch(deleteBooking(id)) },
-    selectBooking: booking => { dispatch(selectBooking(booking)) },
-    requestDelete: id => dispatch(requestDelete(id))
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(AdminPortal)
+export default connect(mapStateToProps)(AdminPortal)

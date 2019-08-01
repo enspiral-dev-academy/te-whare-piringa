@@ -1,77 +1,61 @@
 import React from 'react'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 import moment from 'moment'
+
+import { startBooking } from '../actions/bookings'
 // import {ModalContainer, ModalDialog} from 'react-modal-dialog'
-import {clicked, setNewBooking} from '../actions/calendar'
 
 class ScheduleColumn extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
       showDetails: false,
-      booking: {},
-      mouseDown: false,
-      selectedTime: null
+      selectedDate: null
     }
-    this.clicked = this.clicked.bind(this)
+    this.getClickHandler = this.getClickHandler.bind(this)
     this.handleClose = this.handleClose.bind(this)
-    this.mousePressed = this.mousePressed.bind(this)
-    this.mouseReleased = this.mouseReleased.bind(this)
-    this.mouseEnter = this.mouseEnter.bind(this)
   }
 
-  clicked (e, item) {
-    if (item) {
-      if (!item.fullName) return
-      this.setState({
-        showDetails: true,
-        booking: item
-      })
-    } else {
+  getClickHandler (selectedBooking) {
+    const { startBooking, currentBooking } = this.props
+
+    // TODO: when a selectedBooking is provided, return an event handler
+    // that shows the details (modal) of the booking that was selected.
+    // It will setState({ showDetails: true })
+
+    return e => {
       const dateString = e.target.id.substr(4)
-      const date = new Date(moment(dateString, 'YYYY-MM-DD-HH-mm'))
-      if (!this.props.mouse.clicked) {
-        const date2 = new Date(moment(date).add(30, 'minutes'))
-        this.props.setNewBooking(date, date2)
-      } else {
-        if (this.props.startTime > date) {
-          this.props.setNewBooking(date, new Date(moment(this.props.startTime).add(30, 'minutes')))
+      const selectedDate = moment(dateString, 'YYYY-MM-DD-HH-mm')
+
+      if (currentBooking.startDate) {
+        if (selectedDate.isBefore(currentBooking.startDate)) {
+          startBooking(selectedDate, currentBooking.endDate)
+        } else if (selectedDate.isAfter(currentBooking.endDate)) {
+          startBooking(currentBooking.startDate, addThirty(selectedDate))
+        } else if (isWithinHours(selectedDate, currentBooking.startDate, 2)) {
+          startBooking(selectedDate, currentBooking.endDate)
+        } else if (isWithinHours(currentBooking.endDate, selectedDate, 2)) {
+          startBooking(currentBooking.startDate, addThirty(selectedDate))
         } else {
-          this.props.setNewBooking(this.props.startTime, new Date(moment(date).add(30, 'minutes')))
+          startBooking(selectedDate, addThirty(selectedDate))
         }
+      } else {
+        startBooking(selectedDate, addThirty(selectedDate))
       }
-      this.props.clicked()
-    }
-  }
 
-  mousePressed (e) {
-    if (!this.props.mouse.clicked) {
-      const dateString = e.target.id.substr(4)
-      const startTime = new Date(moment(dateString, 'YYYY-MM-DD-HH-mm'))
       this.setState({
-        selectedTime: startTime,
-        mouseDown: true})
-      this.props.setNewBooking(startTime, new Date(moment(startTime).add(30, 'minutes')))
+        selectedDate: selectedDate
+      })
     }
-  }
 
-  mouseEnter (e) {
-    if (this.state.mouseDown) {
-      const dateString = e.target.id.substr(4)
-      const endTime = new Date(moment(dateString, 'YYYY-MM-DD-HH-mm'))
-      if (endTime > this.state.selectedTime) {
-        this.props.setNewBooking(this.props.startTime, new Date(moment(endTime).add(30, 'minutes')))
-      }
-      if (endTime < this.state.selectedTime) {
-        this.props.setNewBooking(endTime, new Date(moment(this.state.selectedTime).add(30, 'minutes')))
-      }
+    function addThirty (date) {
+      return moment(date).add(30, 'minutes')
     }
-  }
 
-  mouseReleased (e) {
-    this.setState({
-      mouseDown: false
-    })
+    function isWithinHours (date1, date2, hours) {
+      const diff = date1.diff(date2, 'hours')
+      return diff <= hours
+    }
   }
 
   handleClose () {
@@ -82,9 +66,9 @@ class ScheduleColumn extends React.Component {
 
   render () {
     return (
-    <div className={`schedule-column-container ${this.props.dayClass}`} >
-      {this.getTimeSlots(new Date(moment(this.props.date)))}
-      {this.state.showDetails &&
+      <div className={`schedule-column-container ${this.props.dayClass}`} >
+        {this.getTimeSlots(moment(this.props.date))}
+        {this.state.showDetails &&
         <div>
           <table className='detailsTable'>
             <tr>
@@ -125,45 +109,45 @@ class ScheduleColumn extends React.Component {
             </tr>
           </table>
         </div>
-      }
-    </div>
+        }
+      </div>
     )
   }
 
   getTimeSlots (d) {
     const dayArray = []
+    const { startDate, endDate } = this.props.currentBooking
+
     for (let i = 0; i < 16; i++) {
       for (let j = 0; j < 2; j++) {
-        const selectedDate = new Date(d.getFullYear(), d.getMonth(), d.getDate(), i + 6, j * 30)
-        let classNames = 'slot'
-        let ptag = ''
-        let toDisplay = null
-        if (j === 1) {
-          classNames += ' half-hour'
-        } else {
-          classNames += ' full-hour'
+        const classNames = ['slot']
+        const currentDate = moment([d.year(), d.month(), d.date(), i + 6, j * 30])
+        classNames.push(j === 1 ? 'half-hour' : 'full-hour')
+
+        const dateFormatted = moment(currentDate).format('YYYY-MM-DD-HH-mm')
+        if (currentDate.isSameOrAfter(startDate) && currentDate.isBefore(endDate)) {
+          classNames.push('selected')
         }
-        const dateFormatted = moment(selectedDate).format('YYYY-MM-DD-HH-mm')
-        if (selectedDate >= this.props.startTime && selectedDate < this.props.endTime) {
-          classNames += ' selected'
-        }
+
         const booking = this.props.bookings.find(booking => {
-          return booking.startDate <= selectedDate && booking.endDate > selectedDate
+          return booking.startDate.isSameOrBefore(currentDate) &&
+            booking.endDate.isAfter(currentDate)
         })
         if (booking) {
-          if (booking.confirmed) {
-            classNames += ' confirmed'
-          } else {
-            classNames += ' reserved'
-          }
+          classNames.push(booking.confirmed ? 'confirmed' : 'reserved')
         }
-        toDisplay = this.props.bookings.find(booking => {
-          return booking.startDate.getTime() === selectedDate.getTime()
-        })
-        if (toDisplay && toDisplay.fullName && !toDisplay.deleteRequested) {
-          ptag = toDisplay.fullName
-        }
-        dayArray.push(<div key={dateFormatted} id={'slot' + dateFormatted} className={classNames} onClick={ e => this.clicked(e, booking)} onMouseDown={this.mousePressed} onMouseUp={this.mouseReleased} onMouseOver={this.mouseEnter}>{<div className='titleofevent'>{ptag}</div>}</div>)
+
+        let label = ''
+        if (currentDate.isSame(startDate)) label = startDate.format('HH:mm')
+        if (currentDate.isSame(endDate)) label = endDate.format('HH:mm')
+
+        dayArray.push(<div
+          key={dateFormatted}
+          id={`slot${dateFormatted}`}
+          className={classNames.join(' ')}
+          onClick={this.getClickHandler(booking)}>
+          <div className='titleofevent'>{label}</div>
+        </div>)
       }
     }
     return dayArray
@@ -172,17 +156,14 @@ class ScheduleColumn extends React.Component {
 
 function mapStateToProps (state) {
   return {
-    startTime: state.newBooking.startTime,
-    endTime: state.newBooking.endTime,
-    mouse: state.mouse,
+    currentBooking: state.booking,
     bookings: state.bookings.filter(booking => !booking.deleteRequested)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    clicked: () => dispatch(clicked()),
-    setNewBooking: (startTime, endTime) => dispatch(setNewBooking(startTime, endTime))
+    startBooking: (startDate, endDate) => dispatch(startBooking({ startDate, endDate }))
   }
 }
 

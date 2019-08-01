@@ -185,18 +185,21 @@
 
 /*Scheduler styling*/
 .schedule-container {
-  margin: 2em 7.5em 0 7.5em;
+  margin: 2em 2em 0 2em;
 }
 
 .schedule-row {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  flex-wrap: nowrap;
 }
 
 .schedule-body {
   margin: 25px!important;
   border: 3px solid #46075C!important;
 }
+
 .schedule-header-container, .schedule-columns-container, .schedule-columns {
   display: flex;
   flex-direction: row;
@@ -209,6 +212,7 @@
 .schedule-column-container {
   width: 33.33%;
 }
+
 .schedule-hours-container{
   width: 10%;
   min-width: 80px;
@@ -298,6 +302,13 @@
   font-size: 1.25em;
   background: rgba(69, 6, 91, .7);
   text-decoration: none;
+  padding: .5em;
+  cursor: pointer;
+}
+
+.setting-btn2.disabled {
+  background: rgba(169, 169, 169);
+  cursor: default;
 }
 
 .reserved-key {
@@ -427,6 +438,7 @@ hr {
 
 .schedule-inner-container {
   padding: 0;
+  width: 100%;
 }
 
 .schedule-header, .schedule-column-container, .schedule-hours-container {

@@ -1,6 +1,6 @@
 import React from 'react'
-import {connect} from 'react-redux'
-import {makeAdmin, emailAlertChange} from '../actions/index'
+import { connect } from 'react-redux'
+// import { makeAdmin, emailAlertChange } from '../actions/index'
 
 class Settings extends React.Component {
   constructor (props) {
@@ -15,8 +15,8 @@ class Settings extends React.Component {
 
   handleAdmin (evt) {
     evt.preventDefault()
-    this.props.dispatch(makeAdmin(this.state.adminEmail))
-    this.setState({success: true})
+    // this.props.dispatch(makeAdmin(this.state.adminEmail))
+    this.setState({ success: true })
     this.props.close()
   }
 
@@ -28,7 +28,7 @@ class Settings extends React.Component {
 
   handleEmail (evt) {
     evt.preventDefault()
-    this.props.dispatch(emailAlertChange(this.state.alertEmail))
+    // this.props.dispatch(emailAlertChange(this.state.alertEmail))
     this.props.close()
   }
 
@@ -54,7 +54,7 @@ class Settings extends React.Component {
   }
 }
 function mapStatetoProps (state) {
-  return {adminSuccess: state.adminSuccess}
+  return { adminSuccess: state.adminSuccess }
 }
 
 export default connect(mapStatetoProps)(Settings)

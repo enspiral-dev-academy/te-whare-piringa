@@ -1,30 +1,36 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Route, Router } from 'react-router-dom'
+import { Route, BrowserRouter as Router } from 'react-router-dom'
 
-import Home from './Home'
+import AdminPortal from './AdminPortal'
 import Book from './Book'
+import Calendar from './Calendar'
+import Details from './Details'
+import DetailsProfile from './DetailsProfile'
 import Error from './Error'
+import Home from './Home'
 import Login from './Login'
 import history from '../utils/history'
-import AdminPortal from './AdminPortal'
 import Registration from './Registration'
-import DetailsProfile from './DetailsProfile'
-import Calendar from './Calendar'
 import Navigation from './Navigation'
 import Schedular from './Schedular'
-import Details from './Details'
+import Profile from './Profile'
+
+import { getUserProfile } from '../actions/auth'
+import { getBookings } from '../actions/bookings'
 
 class App extends React.Component {
+  componentDidMount () {
+    this.props.dispatch(getBookings())
+    this.props.dispatch(getUserProfile())
+  }
+
   render () {
     return (
       <Router history={history} component={App}>
         <div>
-          <Route path='/' render={props => (
-            <Navigation fullName={this.props.user.fullName} />
-          )}/>
+          <Route path='/' component={Navigation} />
           {this.props.error && <Error /> }
-          {this.props.errors.validationError && <Error />}
           <Route exact path='/' component={Home} />
           <Route path='/login' component={Login} />
           <Route path='/admin' component={AdminPortal} />
@@ -32,7 +38,7 @@ class App extends React.Component {
           <Route path='/schedule' component={Schedular} />
           <Route path="/book" component={Book} />
           <Route path='/register' component={Registration} />
-          <Route path='/profile' component={AdminPortal} />
+          <Route path='/profile' component={Profile} />
           <Route path='/details' component={Details} />
           <Route path='/detailsprofile' component={DetailsProfile} />
         </div>
@@ -41,12 +47,8 @@ class App extends React.Component {
   }
 }
 
-function mapStateToProps (state) {
-  return {
-    user: state.user,
-    error: state.error,
-    errors: state.errors
-  }
+function mapStateToProps ({ error }) {
+  return { error }
 }
 
 export default connect(mapStateToProps)(App)

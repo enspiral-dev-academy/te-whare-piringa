@@ -1,9 +1,10 @@
-import { BOOKING_ADDED } from '../actions/bookings'
+import { START_BOOKING } from '../actions/bookings'
 
 export default function (booking = {}, action) {
   switch (action.type) {
-    case BOOKING_ADDED:
+    case START_BOOKING:
       return action.booking
+
     default:
       return booking
   }

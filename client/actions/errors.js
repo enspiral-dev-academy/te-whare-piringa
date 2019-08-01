@@ -9,6 +9,12 @@ export function showError (error) {
   }
 }
 
+export function clearError () {
+  return {
+    type: CLEAR_ERROR
+  }
+}
+
 export function validationError (message) {
   return {
     type: VALIDATION_ERROR,

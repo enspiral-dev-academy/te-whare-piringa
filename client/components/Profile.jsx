@@ -3,7 +3,7 @@ import moment from 'moment'
 import { connect } from 'react-redux'
 
 import DetailsProfile from './DetailsProfile'
-import { selectBooking, requestDelete } from '../actions/index'
+import { selectBooking, deleteBooking } from '../actions/bookings'
 
 class Profile extends React.Component {
   constructor (props) {
@@ -12,11 +12,11 @@ class Profile extends React.Component {
   }
 
   saveBookingToStore (booking) {
-    this.props.selectBooking(booking)
+    this.props.dispatch(selectBooking(booking))
   }
 
   requestBookingToBeDeleted (id) {
-    this.props.requestDelete(id)
+    this.props.dispatch(deleteBooking(id))
   }
 
   showUserBookings () {
@@ -63,7 +63,7 @@ class Profile extends React.Component {
 function mapDispatchToProps (dispatch) {
   return {
     selectBooking: booking => dispatch(selectBooking(booking)),
-    requestDelete: id => dispatch(requestDelete(id))
+    requestDelete: id => dispatch(deleteBooking(id))
   }
 }
 

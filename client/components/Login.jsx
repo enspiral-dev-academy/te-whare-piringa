@@ -1,29 +1,35 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
+
+import { logIn } from '../actions/auth'
 
 class Login extends React.Component {
   constructor (props) {
     super(props)
+
     this.state = {
       emailAddress: '',
       password: ''
     }
+
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
   }
 
   handleChange (e) {
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value.trim()
     })
   }
 
   handleSubmit (e) {
     e.preventDefault()
-    const loginInfo = {
-      emailAddress: this.state.emailAddress.trim(),
-      password: this.state.password.trim()
-    }
-    this.props.submitRegistration(loginInfo, this.props.history.push)
+    const { emailAddress, password } = this.state
+    this.props.dispatch(logIn(
+      { emailAddress, password },
+      () => this.props.history.push('/calendar'))
+    )
   }
 
   render () {
@@ -51,4 +57,4 @@ class Login extends React.Component {
   }
 }
 
-export default Login
+export default withRouter(connect()(Login))

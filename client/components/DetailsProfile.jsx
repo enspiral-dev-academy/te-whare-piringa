@@ -1,44 +1,53 @@
 import React from 'react'
-import {connect} from 'react-redux'
 import moment from 'moment'
+import { connect } from 'react-redux'
 
-//bare min component to avoid err
+// TODO: figure out what the following comment
+// means ... and if it's still valid
+
+// bare min component to avoid err
 
 function DetailsProfile (props) {
+  const {
+    fullName,
+    emailAddress,
+    phoneNumber,
+    purpose,
+    dateAdded
+  } = props.booking
 
+  // TODO: remove the <b> tags below; use styling instead
   return (
     <div className='details-profile-component'>
       <h2>Booking details</h2>
       <table className='detailsTableProfile'>
         <tr>
           <td><b>Request made for</b></td>
-          <td>{props.booking.fullName}</td>
+          <td>{fullName}</td>
         </tr>
         <tr>
           <td><b>Contact email</b></td>
-          <td>{props.booking.emailAddress}</td>
+          <td>{emailAddress}</td>
         </tr>
         <tr>
           <td><b>Contact number</b></td>
-          <td>{props.booking.phoneNumber}</td>
+          <td>{phoneNumber}</td>
         </tr>
         <tr>
           <td><b>Purpose of event</b></td>
-          <td>{props.booking.purpose}</td>
+          <td>{purpose}</td>
         </tr>
         <tr>
           <td><b>Requested on</b></td>
-          <td>{moment(props.booking.dateAdded).format('YYYY-MM-DD HH:mm')}</td>
+          <td>{moment(dateAdded).format('YYYY-MM-DD HH:mm')}</td>
         </tr>
       </table>
     </div>
   )
 }
 
-function mapStateToProps (state) {
-  return {
-    booking: state.booking
-  }
+function mapStateToProps ({ booking }) {
+  return { booking }
 }
 
 export default connect(mapStateToProps)(DetailsProfile)

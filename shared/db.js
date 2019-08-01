@@ -18,7 +18,7 @@ Promise.all([
   generateHash(testUserPassword)]
 ).then(([adminHash, testuserHash]) => {
   users.push({ // admin
-    'username': 'admin',
+    'username': 'admin@tewharepiringa.nz',
     'fullName': 'Booking Administrator',
     'phoneNumber': '111 222 333',
     'emailAddress': 'admin@tewharepiringa.nz',
@@ -26,7 +26,7 @@ Promise.all([
     'isAdmin': true
   })
   users.push({ // test user
-    'username': 'testuser',
+    'username': 'testuser@tewharepiringa.nz',
     'fullName': 'Test User',
     'phoneNumber': '444 555 666',
     'emailAddress': 'testuser@tewharepiringa.nz',

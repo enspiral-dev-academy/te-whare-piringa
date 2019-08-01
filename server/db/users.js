@@ -55,7 +55,7 @@ function createUser (user) {
           fullName,
           phoneNumber,
           emailAddress,
-          admin: false,
+          isAdmin: false,
           hash: passwordHash,
           dateAdded: new Date()
         }
@@ -71,9 +71,12 @@ function getUsers () {
     .then(db => db.collection(usersCollectionName).find().toArray())
 }
 
-function getUserDetails (id) {
+function getUserDetails (username) {
   return getDb()
-    .then(db => db.collection(usersCollectionName).findOne({ id }))
+    .then(db => db.collection(usersCollectionName).findOne({ username }))
+    .then(({ _id, username, fullName, phoneNumber, emailAddress, isAdmin }) => (
+      { _id, username, fullName, phoneNumber, emailAddress, isAdmin }
+    ))
 }
 
 function makeUserAdmin (emailAddress) {

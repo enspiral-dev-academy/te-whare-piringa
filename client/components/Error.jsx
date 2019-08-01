@@ -1,33 +1,51 @@
 import React from 'react'
-import {connect} from 'react-redux'
-// import {ModalContainer, ModalDialog} from 'react-modal-dialog'
+import Modal from 'react-modal'
+import { connect } from 'react-redux'
 
-import {clearError} from '../actions'
+import { clearError } from '../actions/errors'
 
-function Error (props) {
-  // function handleClose () {
-  //   props.clearError()
-  // }
-
-  return (
-    <div>
-      <h1>{props.errorMessage}</h1>
-      <h1>{props.validationError}</h1>
-    </div>
-  )
-}
-
-function mapStateToProps (state) {
-  return {
-    errorMessage: state.error,
-    validationError: state.errors.message
+const modalStyle = {
+  content: {
+    top: '50%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-50%',
+    transform: 'translate(-50%, -50%)'
   }
 }
 
-function mapDispatchToProps (dispatch) {
-  return {
-    clearError: () => dispatch(clearError())
+class Error extends React.Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      modalVisible: !!props.error
+    }
+  }
+
+  handleClose () {
+    this.props.dispatch(clearError())
+    this.setState({
+      modalVisible: false
+    })
+  }
+
+  render () {
+    return (
+      <Modal
+        style={modalStyle}
+        isOpen={this.state.modalVisible}
+        onRequestClose={this.handleClose}>
+        <div>
+          <h1>{this.props.error}</h1>
+        </div>
+      </Modal>
+    )
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Error)
+function mapStateToProps ({ error }) {
+  return { error }
+}
+
+export default connect(mapStateToProps)(Error)

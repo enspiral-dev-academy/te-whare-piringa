@@ -14,7 +14,8 @@ const bookings = [
     guestCount: 12,
     confirmed: true,
     deleteRequested: false,
-    requesterUsername: 'testuser'
+    requesterUsername: 'testuser@tewharepiringa.nz',
+    dateAdded: moment()
   }, { // today
     startDate: getDate(0, 8),
     endDate: getDate(0, 18),
@@ -22,7 +23,8 @@ const bookings = [
     guestCount: 9,
     confirmed: false,
     deleteRequested: false,
-    requesterUsername: 'testuser'
+    requesterUsername: 'testuser@tewharepiringa.nz',
+    dateAdded: moment()
   }, { // tomorrow
     startDate: getDate(1, 8),
     endDate: getDate(1, 18),
@@ -30,7 +32,8 @@ const bookings = [
     guestCount: 28,
     confirmed: true,
     deleteRequested: false,
-    requesterUsername: 'testuser'
+    requesterUsername: 'testuser@tewharepiringa.nz',
+    dateAdded: moment()
   }
 ]
 
@@ -38,7 +41,6 @@ function getDate (todayOffset, hour) {
   return moment()
     .add(todayOffset, 'days')
     .hour(hour).minute(0).second(0).millisecond(0)
-    .toISOString()
 }
 
 const client = getClient(mongoDbUrl)

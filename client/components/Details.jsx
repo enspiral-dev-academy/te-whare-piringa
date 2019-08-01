@@ -1,41 +1,54 @@
 import React from 'react'
-import {connect} from 'react-redux'
 import moment from 'moment'
+import { connect } from 'react-redux'
 
-//bare min component to avoid err
+// TODO: figure out what the following comment
+// means ... and if it's still valid
+
+// bare min component to avoid err
 
 function Details (props) {
+  const {
+    fullName,
+    emailAddress,
+    phoneNumber,
+    purpose,
+    dateAdded,
+    confirmed,
+    deleteRequested
+  } = props.booking
 
+  // TODO: remove the <b> tags below; use styling instead
   return (
     <div>
       <table className='detailsTable'>
         <tr>
           <td><b>Name</b></td>
-          <td>{props.booking.fullName}</td>
+          <td>{fullName}</td>
         </tr>
         <tr>
           <td><b>Email</b></td>
-          <td>{props.booking.emailAddress}</td>
+          <td>{emailAddress}</td>
         </tr>
         <tr>
           <td><b>Phone</b></td>
-          <td>{props.booking.phoneNumber}</td>
+          <td>{phoneNumber}</td>
         </tr>
         <tr>
           <td><b>Purpose</b></td>
-          <td>{props.booking.purpose}</td>
+          <td>{purpose}</td>
         </tr>
         <tr>
           <td><b>Requested on</b></td>
-          <td>{moment(props.booking.dateAdded).format('YYYY-MM-DD HH:mm')}</td>
+          <td>{moment(dateAdded).format('YYYY-MM-DD HH:mm')}</td>
         </tr>
         <tr>
           <td><b>Booking Confirmed</b></td>
-          <td>{props.booking.confirmed ? 'Yes' : 'No'}</td>
+          <td>{confirmed ? 'Yes' : 'No'}</td>
         </tr>
         <tr>
           <td><b>Delete Requested</b></td>
-          <td>{props.booking.deleteRequested ? 'Yes' : 'No'}</td>
+          <td>{deleteRequested ? 'Yes' : 'No'}</td>
         </tr>
       </table>
     </div>

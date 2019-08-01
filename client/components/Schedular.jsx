@@ -1,38 +1,41 @@
 import React from 'react'
 import moment from 'moment'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
+import { isAuthenticated } from 'authenticare/client'
 
 import HoursColumn from './HoursColumn'
-import {validationError} from '../actions'
-import {switchDate} from '../actions/calendar'
 import ScheduleColumns from './ScheduleColumns'
-import {checkBookingForOverlap, validateAgainstOpenHours} from '../../shared/validation'
+import { validationError } from '../actions/errors'
+import { switchDate } from '../actions/bookings'
+import {
+  checkBookingForOverlap,
+  validateAgainstOpenHours
+} from '../../shared/validation'
 
 class Schedular extends React.Component {
   constructor (props) {
     super(props)
     this.makeNewBooking = this.makeNewBooking.bind(this)
-    this.handleClose = this.handleClose.bind(this)
     this.previousDay = this.previousDay.bind(this)
     this.nextDay = this.nextDay.bind(this)
   }
 
   previousDay () {
-    const {date} = this.props
-    const previous = new Date(moment(date).subtract(1, 'days'))
+    const { date } = this.props
+    const previous = moment(date).subtract(1, 'days')
     this.props.switchDate(previous)
   }
+
   nextDay () {
-    const {date} = this.props
-    const next = new Date(moment(date).add(1, 'days'))
+    const { date } = this.props
+    const next = moment(date).add(1, 'days')
     this.props.switchDate(next)
   }
 
   makeNewBooking () {
-    const booking = {
-      startDate: this.props.startTime,
-      endDate: this.props.endTime
-    }
+    const { startDate, endDate } = this.props
+    const booking = { startDate, endDate }
 
     let dataCheck = checkBookingForOverlap(booking, this.props.bookings)
     if (dataCheck !== 'ok') {
@@ -47,13 +50,13 @@ class Schedular extends React.Component {
     this.props.history.push('/book')
   }
 
-  handleClose () {
-    window.localStorage.setItem('date', this.props.date)
-    window.localStorage.setItem('startTime', this.props.startTime)
-    window.localStorage.setItem('endTime', this.props.endTime)
+  dateRangeSelected () {
+    const { startDate, endDate } = this.props
+    return startDate && startDate.isValid() && endDate && endDate.isValid()
   }
 
   render () {
+    const loggedIn = isAuthenticated()
     return (
       <div className='schedule-container'>
         <div className='schedule'>
@@ -78,17 +81,19 @@ class Schedular extends React.Component {
               </table>
             </div>
             <div className='col-xs-12 login-book'>
-              {this.props.user.authId && <p>
+              {loggedIn && <div>
+                <p>Select the time range for your booking below, and then</p>
                 <input type='button'
                   onClick={this.makeNewBooking}
-                  className='setting-btn2'
-                  value='Request booking' />
-              </p>}
+                  className={`setting-btn2${!this.dateRangeSelected() ? ' disabled' : ''}`}
+                  disabled={!this.dateRangeSelected()}
+                  value='provide some additional details' />
+              </div>}
 
-              {!this.props.user.authId && <p>
+              {!loggedIn && <p>
                 <input type='button'
                   className='setting-btn2'
-                  value='Register or login to request a booking' />
+                  value='Register or log in to request a booking' />
               </p>}
             </div>
           </div>
@@ -123,9 +128,9 @@ class Schedular extends React.Component {
 function mapStateToProps (state) {
   return {
     user: state.user,
-    date: state.display.date,
-    startTime: state.newBooking.startTime,
-    endTime: state.newBooking.endTime,
+    date: state.date,
+    startDate: state.booking.startDate,
+    endDate: state.booking.endDate,
     bookings: state.bookings
   }
 }
@@ -134,8 +139,7 @@ function mapDispatchToProps (dispatch) {
   return {
     validationError: message => dispatch(validationError(message)),
     switchDate: date => dispatch(switchDate(date))
-
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Schedular)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Schedular))

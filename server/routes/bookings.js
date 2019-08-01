@@ -1,3 +1,4 @@
+const moment = require('moment')
 const express = require('express')
 const { getTokenDecoder } = require('authenticare/server')
 
@@ -59,7 +60,15 @@ router.get('/mine', (req, res) => {
 
 // POST /api/v1/bookings
 router.post('/', (req, res) => {
-  addBooking(req.body, req.user.username)
+  addBooking(
+    {
+      ...req.body,
+      startDate: moment(req.body.startDate),
+      endDate: moment(req.body.endDate),
+      dateAdded: moment()
+    },
+    req.user.username
+  )
     .then(bookings => res.json(bookings))
     .then(sendBookingRequest)
     .catch(sendError(res))
