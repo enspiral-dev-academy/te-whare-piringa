@@ -18,9 +18,12 @@ const modalStyle = {
 class Error extends React.Component {
   constructor (props) {
     super(props)
+
     this.state = {
       modalVisible: !!props.error
     }
+
+    this.handleClose = this.handleClose.bind(this)
   }
 
   handleClose () {

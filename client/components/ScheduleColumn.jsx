@@ -1,9 +1,20 @@
 import React from 'react'
+import Modal from 'react-modal'
 import { connect } from 'react-redux'
 import moment from 'moment'
 
-import { startBooking } from '../actions/bookings'
-// import {ModalContainer, ModalDialog} from 'react-modal-dialog'
+import { showBooking, startBooking } from '../actions/bookings'
+
+const modalStyle = {
+  content: {
+    top: '50%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-50%',
+    transform: 'translate(-50%, -50%)'
+  }
+}
 
 class ScheduleColumn extends React.Component {
   constructor (props) {
@@ -17,30 +28,55 @@ class ScheduleColumn extends React.Component {
   }
 
   getClickHandler (selectedBooking) {
-    const { startBooking, currentBooking } = this.props
+    const { showBooking, startBooking, currentBooking } = this.props
 
-    // TODO: when a selectedBooking is provided, return an event handler
+    // When a selectedBooking is provided, return an event handler
     // that shows the details (modal) of the booking that was selected.
-    // It will setState({ showDetails: true })
+    if (selectedBooking) {
+      return e => {
+        showBooking(selectedBooking)
+        this.setState({ showDetails: true })
+      }
+    }
 
+    // Otherwise, return an event handler that alters either
+    // the startDate or the endDate based on the selectedDate.
     return e => {
       const dateString = e.target.id.substr(4)
       const selectedDate = moment(dateString, 'YYYY-MM-DD-HH-mm')
 
       if (currentBooking.startDate) {
         if (selectedDate.isBefore(currentBooking.startDate)) {
-          startBooking(selectedDate, currentBooking.endDate)
+          startBooking({
+            startDate: selectedDate,
+            endDate: currentBooking.endDate
+          })
         } else if (selectedDate.isAfter(currentBooking.endDate)) {
-          startBooking(currentBooking.startDate, addThirty(selectedDate))
+          startBooking({
+            startDate: currentBooking.startDate,
+            endDate: addThirty(selectedDate)
+          })
         } else if (isWithinHours(selectedDate, currentBooking.startDate, 2)) {
-          startBooking(selectedDate, currentBooking.endDate)
+          startBooking({
+            startDate: selectedDate,
+            endDate: currentBooking.endDate
+          })
         } else if (isWithinHours(currentBooking.endDate, selectedDate, 2)) {
-          startBooking(currentBooking.startDate, addThirty(selectedDate))
+          startBooking({
+            startDate: currentBooking.startDate,
+            endDate: addThirty(selectedDate)
+          })
         } else {
-          startBooking(selectedDate, addThirty(selectedDate))
+          startBooking({
+            startDate: selectedDate,
+            endDate: addThirty(selectedDate)
+          })
         }
       } else {
-        startBooking(selectedDate, addThirty(selectedDate))
+        startBooking({
+          startDate: selectedDate,
+          endDate: addThirty(selectedDate)
+        })
       }
 
       this.setState({
@@ -59,57 +95,74 @@ class ScheduleColumn extends React.Component {
   }
 
   handleClose () {
+    this.props.startBooking({})
     this.setState({
       showDetails: false
     })
   }
 
   render () {
+    const {
+      fullName,
+      phoneNumber,
+      emailAddress,
+      purpose,
+      confirmed,
+      deleteRequested,
+      startDate = moment(),
+      endDate = moment(),
+      dateAdded = moment()
+    } = this.props.currentBooking
     return (
       <div className={`schedule-column-container ${this.props.dayClass}`} >
         {this.getTimeSlots(moment(this.props.date))}
-        {this.state.showDetails &&
-        <div>
-          <table className='detailsTable'>
-            <tr>
-              <td><b>Name</b></td>
-              <td>{this.state.booking.fullName}</td>
-            </tr>
-            <tr>
-              <td><b>Email</b></td>
-              <td>{this.state.booking.emailAddress}</td>
-            </tr>
-            <tr>
-              <td><b>Phone</b></td>
-              <td>{this.state.booking.phoneNumber}</td>
-            </tr>
-            <tr>
-              <td><b>Purpose</b></td>
-              <td>{this.state.booking.purpose}</td>
-            </tr>
-            <tr>
-              <td><b>Requested on</b></td>
-              <td>{moment(this.state.booking.dateAdded).format('YYYY-MM-DD HH:mm')}</td>
-            </tr>
-            <tr>
-              <td><b>Start</b></td>
-              <td>{moment(this.state.booking.startDate).format('YYYY-MM-DD HH:mm')}</td>
-            </tr>
-            <tr>
-              <td><b>End</b></td>
-              <td>{moment(this.state.booking.endDate).format('YYYY-MM-DD HH:mm')}</td>
-            </tr>
-            <tr>
-              <td><b>Booking Confirmed</b></td>
-              <td>{this.state.booking.confirmed ? 'Yes' : 'No'}</td>
-            </tr>
-            <tr>
-              <td><b>Delete Requested</b></td>
-              <td>{this.state.booking.deleteRequested ? 'Yes' : 'No'}</td>
-            </tr>
-          </table>
-        </div>
-        }
+        <Modal
+          style={modalStyle}
+          isOpen={this.state.showDetails}
+          onRequestClose={this.handleClose}>
+          <div>
+            <table className='detailsTable'>
+              <tbody>
+                {fullName && <tr>
+                  <td><b>Name</b></td>
+                  <td>{fullName}</td>
+                </tr>}
+                {emailAddress && <tr>
+                  <td><b>Email</b></td>
+                  <td>{emailAddress}</td>
+                </tr>}
+                {phoneNumber && <tr>
+                  <td><b>Phone</b></td>
+                  <td>{phoneNumber}</td>
+                </tr>}
+                {purpose && <tr>
+                  <td><b>Purpose</b></td>
+                  <td>{purpose}</td>
+                </tr>}
+                <tr>
+                  <td><b>Start</b></td>
+                  <td>{startDate.format('YYYY-MM-DD HH:mm')}</td>
+                </tr>
+                <tr>
+                  <td><b>End</b></td>
+                  <td>{endDate.format('YYYY-MM-DD HH:mm')}</td>
+                </tr>
+                <tr>
+                  <td><b>Requested on</b></td>
+                  <td>{dateAdded.format('YYYY-MM-DD HH:mm')}</td>
+                </tr>
+                <tr>
+                  <td><b>Booking Confirmed</b></td>
+                  <td>{confirmed ? 'Yes' : 'No'}</td>
+                </tr>
+                <tr>
+                  <td><b>Delete Requested</b></td>
+                  <td>{deleteRequested ? 'Yes' : 'No'}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </Modal>
       </div>
     )
   }
@@ -163,7 +216,8 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    startBooking: (startDate, endDate) => dispatch(startBooking({ startDate, endDate }))
+    showBooking: booking => dispatch(showBooking(booking)),
+    startBooking: booking => dispatch(startBooking(booking))
   }
 }
 

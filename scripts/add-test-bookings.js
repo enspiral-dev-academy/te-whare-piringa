@@ -8,6 +8,9 @@ const { databaseName, bookingsCollectionName } = require('../shared/config')
 
 const bookings = [
   { // yesterday
+    fullName: 'Test User',
+    emailAddress: 'testuser@tewharepiringa.nz',
+    phoneNumber: '111 222 333',
     startDate: getDate(-1, 8),
     endDate: getDate(-1, 18),
     purpose: 'For testing purposes',
@@ -15,8 +18,11 @@ const bookings = [
     confirmed: true,
     deleteRequested: false,
     requesterUsername: 'testuser@tewharepiringa.nz',
-    dateAdded: moment()
+    dateAdded: moment().toString()
   }, { // today
+    fullName: 'Test User',
+    emailAddress: 'testuser@tewharepiringa.nz',
+    phoneNumber: '111 222 333',
     startDate: getDate(0, 8),
     endDate: getDate(0, 18),
     purpose: 'For testing purposes',
@@ -24,8 +30,11 @@ const bookings = [
     confirmed: false,
     deleteRequested: false,
     requesterUsername: 'testuser@tewharepiringa.nz',
-    dateAdded: moment()
+    dateAdded: moment().toString()
   }, { // tomorrow
+    fullName: 'Test User',
+    emailAddress: 'testuser@tewharepiringa.nz',
+    phoneNumber: '111 222 333',
     startDate: getDate(1, 8),
     endDate: getDate(1, 18),
     purpose: 'For testing purposes',
@@ -33,7 +42,7 @@ const bookings = [
     confirmed: true,
     deleteRequested: false,
     requesterUsername: 'testuser@tewharepiringa.nz',
-    dateAdded: moment()
+    dateAdded: moment().toString()
   }
 ]
 
@@ -41,6 +50,7 @@ function getDate (todayOffset, hour) {
   return moment()
     .add(todayOffset, 'days')
     .hour(hour).minute(0).second(0).millisecond(0)
+    .toString()
 }
 
 const client = getClient(mongoDbUrl)

@@ -5,14 +5,22 @@ import { showError } from './errors'
 import { sendingRequest, gotResponse } from './requests'
 
 export const SWITCH_DATE = 'SWITCH_DATE'
+export const SHOW_BOOKING = 'SHOW_BOOKING'
 export const START_BOOKING = 'START_BOOKING'
 export const RECEIVE_BOOKINGS = 'RECEIVE_BOOKINGS'
+
+export function showBooking (booking) {
+  return {
+    type: SHOW_BOOKING,
+    booking: booking
+  }
+}
 
 export function getBookings () {
   return dispatch => {
     dispatch(sendingRequest())
     makeRequest('/bookings')
-      .then(res => dispatch(receiveBookings(res.body)))
+      .then(res => dispatch(receiveBookings(res.body.bookings)))
       .catch(err => dispatch(showError(err)))
       .finally(() => dispatch(gotResponse()))
   }
@@ -23,7 +31,7 @@ export function addBooking (booking) {
     dispatch(sendingRequest())
     makeRequest('/bookings', 'post', booking)
       .then(res => {
-        dispatch(startBooking(res.body.booking))
+        dispatch(selectBooking(res.body.booking))
         dispatch(receiveBookings(res.body.bookings))
       })
       .catch(err => dispatch(showError(err)))
@@ -55,25 +63,29 @@ export function deleteBooking (booking) {
 }
 
 export function startBooking (booking) {
+  const { startDate, endDate } = booking
   return {
     type: START_BOOKING,
-    booking: booking
+    booking: {
+      startDate: moment(startDate),
+      endDate: moment(endDate)
+    }
   }
 }
 
 export function receiveBookings (bookings = []) {
-  const cleanBookings = bookings.map(booking => ({
+  const preparedBookings = bookings.map(booking => ({
     ...booking,
-    dateAdded: moment(booking.dateAdded._d),
-    startDate: moment(booking.startDate._d),
-    endDate: moment(booking.endDate._d)
+    dateAdded: moment(booking.dateAdded),
+    startDate: moment(booking.startDate),
+    endDate: moment(booking.endDate)
   }))
 
-  cleanBookings.sort((a, b) => a.startDate - b.startDate)
+  preparedBookings.sort((a, b) => a.startDate - b.startDate)
 
   return {
     type: RECEIVE_BOOKINGS,
-    bookings: cleanBookings
+    bookings: preparedBookings
   }
 }
 
@@ -85,8 +97,21 @@ export function switchDate (date) {
 }
 
 export function selectBooking (booking) {
+  const { startDate, endDate, dateAdded } = booking
   return {
     type: START_BOOKING,
-    booking
+    booking: {
+      ...booking,
+      startDate: moment(startDate),
+      endDate: moment(endDate),
+      dateAdded: moment(dateAdded)
+    }
+  }
+}
+
+export function deselectBooking () {
+  return {
+    type: START_BOOKING,
+    booking: {}
   }
 }

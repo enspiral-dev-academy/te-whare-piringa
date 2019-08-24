@@ -1,3 +1,4 @@
+const moment = require('moment')
 const ObjectId = require('mongodb').ObjectID
 
 const {
@@ -35,12 +36,20 @@ function getAnonymousBookings () {
     .then(bookings => bookings.map(booking => removeDetails(booking)))
 }
 
-function removeDetails ({ startDate, endDate, confirmed }) {
-  // remove all booking properties except startDate, endDate and confirmed
-  return { startDate, endDate, confirmed }
+function removeDetails (booking) {
+  // remove all booking properties except
+  // startDate, endDate, confirmed, dateAdded and deleteRequested
+  const { startDate, endDate, confirmed, dateAdded, deleteRequested } = booking
+  return { startDate, endDate, confirmed, dateAdded, deleteRequested }
 }
 
 function getUserBookings (requesterUsername) {
+  return getBookingsCollection()
+    .then(bookings => bookings.find({ requesterUsername }).toArray())
+}
+
+function getUserPastBookings (requesterUsername) {
+  // TODO: filter to only bookings with an endDate older than 1.5 months ago
   return getBookingsCollection()
     .then(bookings => bookings.find({ requesterUsername }).toArray())
 }
@@ -63,9 +72,11 @@ function addBooking (booking, username) {
 function initialiseBooking (booking) {
   return {
     ...booking,
-    confirmed: false,
-    dateAdded: new Date(),
-    deleteRequested: false
+    startDate: booking.startDate.toString(),
+    endDate: booking.endDate.toString(),
+    dateAdded: moment().toString(),
+    deleteRequested: false,
+    confirmed: false
   }
 }
 
@@ -116,6 +127,7 @@ function deleteBooking (bookingId, username) {
 module.exports = {
   getAnonymousBookings,
   getUserBookings,
+  getUserPastBookings,
   getAllBookings,
   addBooking,
   confirmBooking,

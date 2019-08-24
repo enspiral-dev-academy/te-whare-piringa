@@ -24,6 +24,10 @@
   align-items: center;
 }
 
+.profile-container td, .profile-container th {
+  padding: 0.5rem;
+}
+
 .details-profile-component {
   display: flex;
   flex-direction: column;

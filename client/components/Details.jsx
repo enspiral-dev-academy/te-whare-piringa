@@ -22,34 +22,36 @@ function Details (props) {
   return (
     <div>
       <table className='detailsTable'>
-        <tr>
-          <td><b>Name</b></td>
-          <td>{fullName}</td>
-        </tr>
-        <tr>
-          <td><b>Email</b></td>
-          <td>{emailAddress}</td>
-        </tr>
-        <tr>
-          <td><b>Phone</b></td>
-          <td>{phoneNumber}</td>
-        </tr>
-        <tr>
-          <td><b>Purpose</b></td>
-          <td>{purpose}</td>
-        </tr>
-        <tr>
-          <td><b>Requested on</b></td>
-          <td>{moment(dateAdded).format('YYYY-MM-DD HH:mm')}</td>
-        </tr>
-        <tr>
-          <td><b>Booking Confirmed</b></td>
-          <td>{confirmed ? 'Yes' : 'No'}</td>
-        </tr>
-        <tr>
-          <td><b>Delete Requested</b></td>
-          <td>{deleteRequested ? 'Yes' : 'No'}</td>
-        </tr>
+        <tbody>
+          <tr>
+            <td><b>Name</b></td>
+            <td>{fullName}</td>
+          </tr>
+          <tr>
+            <td><b>Email</b></td>
+            <td>{emailAddress}</td>
+          </tr>
+          <tr>
+            <td><b>Phone</b></td>
+            <td>{phoneNumber}</td>
+          </tr>
+          <tr>
+            <td><b>Purpose</b></td>
+            <td>{purpose}</td>
+          </tr>
+          <tr>
+            <td><b>Requested on</b></td>
+            <td>{moment(dateAdded).format('YYYY-MM-DD HH:mm')}</td>
+          </tr>
+          <tr>
+            <td><b>Booking Confirmed</b></td>
+            <td>{confirmed ? 'Yes' : 'No'}</td>
+          </tr>
+          <tr>
+            <td><b>Delete Requested</b></td>
+            <td>{deleteRequested ? 'Yes' : 'No'}</td>
+          </tr>
+        </tbody>
       </table>
     </div>
   )

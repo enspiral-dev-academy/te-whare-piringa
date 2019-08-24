@@ -2,7 +2,7 @@ const express = require('express')
 const { getTokenDecoder } = require('authenticare/server')
 
 const { getUserDetails } = require('../db/users')
-const { getUserBookings } = require('../db/bookings')
+const { getUserPastBookings } = require('../db/bookings')
 
 const router = express.Router()
 router.use(express.json())
@@ -15,9 +15,9 @@ function sendError (res) {
 // GET /api/v1/profile
 router.get('/', getTokenDecoder(), (req, res) => {
   getUserDetails(req.user.username)
-    .then(user => {
-      return getUserBookings(user.username)
-        .then(bookings => res.json({ user, bookings }))
+    .then(details => {
+      return getUserPastBookings(details.username)
+        .then(pastBookings => res.json({ details, pastBookings }))
     })
     .catch(sendError(res))
 })

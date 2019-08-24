@@ -19,18 +19,17 @@ export function submitRegistration (user, callback) {
       fullName,
       password
     }, { baseUrl })
-      .then(token => {
-        return makeRequest('/profile')
-          .then(res => {
-            const { user: details, bookings } = res.body
-            const authenticatedUser = { token, details, bookings }
-            dispatch(loggedIn(authenticatedUser))
-            dispatch(gotResponse())
-            callback(authenticatedUser)
-            return authenticatedUser
-          })
-      })
-      .catch(err => showError(err))
+      .then(() => makeRequest('/profile')
+        .then(res => {
+          const { details, pastBookings } = res.body
+          const authenticatedUser = { details, pastBookings }
+          dispatch(loggedIn(authenticatedUser))
+          callback(authenticatedUser)
+          return authenticatedUser
+        })
+      )
+      .catch(err => dispatch(showError(err)))
+      .finally(() => dispatch(gotResponse()))
   }
 }
 
@@ -41,36 +40,30 @@ export function logIn (user, callback) {
       username: user.emailAddress,
       password: user.password
     }, { baseUrl })
-      .then(token => {
-        return makeRequest('/profile')
-          .then(res => {
-            const { user: details, bookings } = res.body
-            const authenticatedUser = { token, details, bookings }
-            dispatch(loggedIn(authenticatedUser))
-            dispatch(gotResponse())
-            callback(authenticatedUser)
-            return authenticatedUser
-          })
-      })
-      .catch(err => showError(err))
+      .then(() => makeRequest('/profile')
+        .then(res => {
+          const { details, pastBookings } = res.body
+          const authenticatedUser = { details, pastBookings }
+          dispatch(loggedIn(authenticatedUser))
+          callback(authenticatedUser)
+        })
+      )
+      .catch(err => dispatch(showError(err)))
+      .finally(() => dispatch(gotResponse()))
   }
 }
 
-export function getUserProfile (username) {
+export function getUserProfile (showErrors) {
   return dispatch => {
     dispatch(sendingRequest())
-    return makeRequest('/profile')
-      .then(token => {
-        return makeRequest('/profile')
-          .then(res => {
-            const { user: details, bookings } = res.body
-            const authenticatedUser = { token, details, bookings }
-            dispatch(loggedIn(authenticatedUser))
-            dispatch(gotResponse())
-            return authenticatedUser
-          })
+    makeRequest('/profile')
+      .then(res => {
+        const { details, pastBookings } = res.body
+        const authenticatedUser = { details, pastBookings }
+        dispatch(loggedIn(authenticatedUser))
       })
-      .catch(err => showError(err))
+      .catch(err => showErrors && dispatch(showError(err)))
+      .finally(() => dispatch(gotResponse()))
   }
 }
 
@@ -79,7 +72,7 @@ export function makeAdmin (email) {
     dispatch(sendingRequest())
     makeRequest(`/admin/makeadmin/${email}`, 'put')
       .then(res => dispatch(gotResponse()))
-      .catch(err => showError(err))
+      .catch(err => dispatch(showError(err)))
   }
 }
 

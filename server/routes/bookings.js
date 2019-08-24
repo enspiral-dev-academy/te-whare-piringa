@@ -35,14 +35,20 @@ router.get('/', getTokenDecoder(false), (req, res) => {
   isAdmin(username).then(isAdmin => {
     getAllBookings()
       .then(bookings => {
-        const response = bookings.map(booking => {
-          const { startDate, endDate, requesterUsername } = booking
+        const sanitizedBookings = bookings.map(booking => {
+          const {
+            startDate,
+            endDate,
+            confirmed,
+            dateAdded,
+            deleteRequested,
+            requesterUsername } = booking
           const sanitizedBooking = isAdmin || requesterUsername === username
             ? booking
-            : { startDate, endDate }
+            : { startDate, endDate, confirmed, dateAdded, deleteRequested }
           return sanitizedBooking
         })
-        res.json(response)
+        res.json({ bookings: sanitizedBookings })
       })
       .catch(sendError(res))
   })

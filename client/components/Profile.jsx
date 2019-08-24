@@ -1,37 +1,28 @@
 import React from 'react'
 import moment from 'moment'
 import { connect } from 'react-redux'
+import { Route, Link } from 'react-router-dom'
 
+import {
+  selectBooking,
+  deselectBooking,
+  deleteBooking } from '../actions/bookings'
 import DetailsProfile from './DetailsProfile'
-import { selectBooking, deleteBooking } from '../actions/bookings'
 
 class Profile extends React.Component {
-  constructor (props) {
-    super(props)
-    this.saveBookingToStore = this.saveBookingToStore.bind(this)
-  }
-
-  saveBookingToStore (booking) {
-    this.props.dispatch(selectBooking(booking))
-  }
-
-  requestBookingToBeDeleted (id) {
-    this.props.dispatch(deleteBooking(id))
-  }
-
   showUserBookings () {
-    return this.props.bookings.filter(booking => booking.authId).map((booking, i) => {
-      return (
-        <tr key={i}>
+    return this.props.bookings
+      .filter(booking => booking.emailAddress)
+      .map(booking => (
+        <tr key={booking._id}>
+          <td>
+            <Link to={`/profile/details/${booking._id}`}
+              replace={true}>{booking.purpose}</Link>
+          </td>
           <td>{moment(booking.startDate).format('YYYY-MM-DD HH:mm')}</td>
-          <td>{moment(booking.endDate).format('YYYY-MM-DD HH:mm')}</td>
-          <td>{booking.confirmed ? 'Confirmed' : 'Waiting to be confirmed'}</td>
-          <td>{booking.deleteRequested ? 'Delete Requested' : 'No'}</td>
-          <td><button onClick={() => this.saveBookingToStore(booking)}>View</button></td>
-          <td>{!booking.deleteRequested && <button onClick={() => this.requestBookingToBeDeleted(booking._id)}>Request Delete</button>}</td>
+          <td>{booking.confirmed ? 'Yes' : 'No'}</td>
         </tr>
-      )
-    })
+      ))
   }
 
   render () {
@@ -43,10 +34,9 @@ class Profile extends React.Component {
           <table className='profile-table'>
             <thead>
               <tr>
+                <th>Purpose</th>
                 <th>Start Time</th>
-                <th>End Time</th>
-                <th>Confirmation Status</th>
-                <th>Delete Requested</th>
+                <th>Confirmed</th>
               </tr>
             </thead>
             <tbody>
@@ -54,7 +44,7 @@ class Profile extends React.Component {
             </tbody>
           </table>
         </div>
-        {this.props.booking.fullName && <DetailsProfile />}
+        <Route path='/profile/details/:id' component={DetailsProfile} />
       </div>
     )
   }
@@ -63,16 +53,15 @@ class Profile extends React.Component {
 function mapDispatchToProps (dispatch) {
   return {
     selectBooking: booking => dispatch(selectBooking(booking)),
-    requestDelete: id => dispatch(deleteBooking(id))
+    deleteBooking: booking => {
+      dispatch(deleteBooking(booking))
+      dispatch(deselectBooking(booking))
+    }
   }
 }
 
-function mapStateToProps (state) {
-  return {
-    booking: state.booking,
-    bookings: state.bookings,
-    authId: state.user.authId
-  }
+function mapStateToProps ({ user, booking, bookings }) {
+  return { user, booking, bookings }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Profile)

@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Route, BrowserRouter as Router } from 'react-router-dom'
 
-import AdminPortal from './AdminPortal'
+import Admin from './Admin'
 import Book from './Book'
 import Calendar from './Calendar'
 import Details from './Details'
@@ -22,7 +22,7 @@ import { getBookings } from '../actions/bookings'
 class App extends React.Component {
   componentDidMount () {
     this.props.dispatch(getBookings())
-    this.props.dispatch(getUserProfile())
+    this.props.dispatch(getUserProfile(false))
   }
 
   render () {
@@ -33,7 +33,7 @@ class App extends React.Component {
           {this.props.error && <Error /> }
           <Route exact path='/' component={Home} />
           <Route path='/login' component={Login} />
-          <Route path='/admin' component={AdminPortal} />
+          <Route path='/admin' component={Admin} />
           <Route path='/calendar' component={Calendar} />
           <Route path='/schedule' component={Schedular} />
           <Route path="/book" component={Book} />

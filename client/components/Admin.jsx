@@ -21,7 +21,7 @@ const modalStyle = {
   }
 }
 
-class AdminPortal extends React.Component {
+class Admin extends React.Component {
   constructor (props) {
     super(props)
 
@@ -75,7 +75,7 @@ class AdminPortal extends React.Component {
       showSettings: false,
       sure: false
     })
-    this.props.history.push('/admin')
+    this.props.history.replace('/admin')
   }
 
   applyFilter (currentFilter) {
@@ -85,20 +85,21 @@ class AdminPortal extends React.Component {
   }
 
   isInFilter (booking) {
+    const endDateIsInFuture = booking.endDate > new Date()
     const current = this.state.currentFilter
-    if (current === 'unconfirmed' && !booking.confirmed && booking.endDate > new Date()) {
+    if (current === 'unconfirmed' && !booking.confirmed && endDateIsInFuture) {
       return true
     }
-    if (current === 'confirmed' && booking.confirmed && booking.endDate > new Date()) {
+    if (current === 'confirmed' && booking.confirmed && endDateIsInFuture) {
       return true
     }
-    if (current === 'delete' && booking.deleteRequested && booking.endDate > new Date()) {
+    if (current === 'delete' && booking.deleteRequested && endDateIsInFuture) {
       return true
     }
-    if (current === 'all' && booking.endDate > new Date()) {
+    if (current === 'all' && endDateIsInFuture) {
       return true
     }
-    if (current === 'history' && booking.endDate < new Date()) {
+    if (current === 'history' && !endDateIsInFuture) {
       return true
     }
     return false
@@ -110,10 +111,11 @@ class AdminPortal extends React.Component {
   }
 
   render () {
+    const isAdmin = this.props.user && this.props.user.isAdmin
     return (
       <div className="admin-portal container">
         <div>
-          <h2>Welcome, {this.props.user.fullName}</h2>
+          <h2>Hey Admin</h2>
           <div className="row">
             <div className="col-md-1" />
             <div className="col-md-10">
@@ -172,7 +174,7 @@ class AdminPortal extends React.Component {
           <div className="row">
             <div className="col-md-1" />
             <div className="col-md-10 text-center">
-              {this.props.admin && (
+              {isAdmin && (
                 <div>
                   <button onClick={this.settingShow} className="setting-btn">Settings</button>
                   {this.state.showSettings &&
@@ -190,14 +192,14 @@ class AdminPortal extends React.Component {
                   <div>
                     <h3>Details</h3>
                     <Details />
-                    {!this.props.admin && !this.state.sure && <div className="text-center"> <button onClick={() => this.setState({ sure: true })}>Request Delete</button></div>}
-                    {!this.props.admin && this.state.sure &&
+                    {!isAdmin && !this.state.sure && <div className="text-center"> <button onClick={() => this.setState({ sure: true })}>Request Delete</button></div>}
+                    {!isAdmin && this.state.sure &&
                       <div className="text-center">
                         <p className="sure">Are you sure?</p>
                         <button onClick={() => this.requestBookingToBeDeleted(this.props.booking)}>Yes, Request Delete</button>
                       </div>
                     }
-                    {this.props.admin &&
+                    {isAdmin &&
                       <div className="modal-admin">
                         {!this.state.sure &&
                           <div className="text-center">
@@ -227,12 +229,10 @@ class AdminPortal extends React.Component {
 
 function mapStateToProps (state) {
   return {
-    // TODO: this filter looks fishy (truthy authId?)
-    bookings: state.bookings.filter(booking => booking.authId),
-    admin: state.user.admin,
     booking: state.booking,
-    user: state.user
+    bookings: state.bookings,
+    user: state.user && state.user.details
   }
 }
 
-export default connect(mapStateToProps)(AdminPortal)
+export default connect(mapStateToProps)(Admin)

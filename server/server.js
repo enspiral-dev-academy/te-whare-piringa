@@ -17,7 +17,7 @@ app.use('/api/v1/bookings', bookingRoutes)
 
 app.use((err, req, res, next) => {
   if (err.name === 'UnauthorizedError') {
-    res.status(401).send({ error: 'Invalid or missing authorization token' })
+    return res.status(401).send({ error: 'Invalid or missing authorization token' })
   }
 
   // TODO: Remove this for a better alternative

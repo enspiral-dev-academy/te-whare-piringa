@@ -34,7 +34,7 @@ class Schedular extends React.Component {
   }
 
   makeNewBooking () {
-    const { startDate, endDate } = this.props
+    const { startDate, endDate } = this.props.booking
     const booking = { startDate, endDate }
 
     let dataCheck = checkBookingForOverlap(booking, this.props.bookings)
@@ -51,8 +51,11 @@ class Schedular extends React.Component {
   }
 
   dateRangeSelected () {
-    const { startDate, endDate } = this.props
-    return startDate && startDate.isValid() && endDate && endDate.isValid()
+    const { booking } = this.props
+    return booking.startDate &&
+      booking.startDate.isValid() &&
+      booking.endDate &&
+      booking.endDate.isValid()
   }
 
   render () {
@@ -70,7 +73,7 @@ class Schedular extends React.Component {
                   <tr>
                     <td className='schedule-indicator'>Available</td>
                     <td className='schedule-indicator'>Reserved</td>
-                    <td className='schedule-indicator'>Booked</td>
+                    <td className='schedule-indicator'>Confirmed</td>
                   </tr>
                   <tr>
                     <td><div className='available-key circle' /></td>
@@ -85,7 +88,7 @@ class Schedular extends React.Component {
                 <p>Select the time range for your booking below, and then</p>
                 <input type='button'
                   onClick={this.makeNewBooking}
-                  className={`setting-btn2${!this.dateRangeSelected() ? ' disabled' : ''}`}
+                  className={`setting-btn2${this.dateRangeSelected() ? '' : ' disabled'}`}
                   disabled={!this.dateRangeSelected()}
                   value='provide some additional details' />
               </div>}
@@ -129,8 +132,7 @@ function mapStateToProps (state) {
   return {
     user: state.user,
     date: state.date,
-    startDate: state.booking.startDate,
-    endDate: state.booking.endDate,
+    booking: state.booking,
     bookings: state.bookings
   }
 }
