@@ -7,6 +7,7 @@
   "author": "Enspiral Dev Academy",
   "license": "MIT",
   "scripts": {
+    "build": "run-s prod:build",
     "dev:build": "webpack --watch --config webpack.config.dev.js",
     "dev:run": "nodemon --watch server",
     "dev": "run-p dev:*",
@@ -37,7 +38,7 @@
     ]
   },
   "dependencies": {
-    "authenticare": "^0.4.3",
+    "authenticare": "^0.4.5",
     "cors": "^2.8.5",
     "dotenv": "^8.0.0",
     "express": "^4.17.1",
