@@ -44,7 +44,7 @@
     "express": "^4.17.1",
     "mailgun-js": "^0.22.0",
     "moment": "^2.24.0",
-    "mongodb": "^3.2.7"
+    "mongodb": "^3.3.5"
   },
   "devDependencies": {
     "@babel/core": "^7.4.5",
