@@ -2,7 +2,6 @@ module.exports = {
   newRequestEmail: 'bookings@tewharepiringa.nz',
   mailgunApiUrl: 'https://api.mailgun.net/v3/mail.tewharepiringa.nz',
   mailgunDomainName: 'mail.tewharepiringa.nz',
-  databaseName: 'te-whare-piringa',
   bookingsCollectionName: 'bookings',
   usersCollectionName: 'users',
   apiBaseUrl: '/api/v1',

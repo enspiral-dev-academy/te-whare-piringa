@@ -4,8 +4,7 @@ const ObjectId = require('mongodb').ObjectID
 const {
   validateBookingDetails,
   checkBookingForOverlap } = require('../../shared/validation')
-const { databaseName } = require('../../shared/config')
-const { mongoDbUri } = require('../../shared/vars')
+const { mongoDbUri, databaseName } = require('../../shared/vars')
 const { getDatabase } = require('../../shared/db')
 
 module.exports = {

@@ -3,8 +3,8 @@ require('dotenv').config({ path: path.join(__dirname, '..', '.env') })
 const moment = require('moment')
 
 const { getClient } = require('../shared/db')
-const { mongoDbUrl } = require('../shared/vars')
-const { databaseName, bookingsCollectionName } = require('../shared/config')
+const { bookingsCollectionName } = require('../shared/config')
+const { prodMongoDbUri, prodDatabaseName } = require('../shared/vars')
 
 const bookings = [
   { // yesterday
@@ -53,10 +53,10 @@ function getDate (todayOffset, hour) {
     .toString()
 }
 
-const client = getClient(mongoDbUrl)
+const client = getClient(prodMongoDbUri, prodDatabaseName)
 
 client.connect()
-  .then(conn => conn.db(databaseName))
+  .then(conn => conn.db())
   .then(db => db.collection(bookingsCollectionName).insertMany(bookings))
   .then(() => {
     // eslint-disable-next-line no-console

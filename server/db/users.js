@@ -1,8 +1,7 @@
 const { generateHash } = require('authenticare/server')
 
 const { validateUserDetails } = require('../../shared/validation')
-const { databaseName } = require('../../shared/config')
-const { mongoDbUri } = require('../../shared/vars')
+const { mongoDbUri, databaseName } = require('../../shared/vars')
 const { getDatabase } = require('../../shared/db')
 
 const usersCollectionName = 'users'

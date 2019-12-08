@@ -18,7 +18,8 @@
     "db:init:prod": "node scripts/init-prod-db",
     "db:start": "docker-compose up -d",
     "db:stop": "docker-compose down",
-    "db:seed": "node scripts/add-test-bookings",
+    "db:seed:dev": "node scripts/db-seed-dev",
+    "db:seed:prod": "node scripts/db-seed-prod",
     "prod:build": "webpack --config webpack.config.prod.js",
     "deploy-env-vars": "node scripts/deploy-env-vars",
     "postinstall": "run-p prod:build"

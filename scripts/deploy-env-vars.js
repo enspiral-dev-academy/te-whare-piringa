@@ -7,6 +7,7 @@ const exec = require('child_process').exec
 const herokuCommand = `heroku config:set --app tewharepiringa \
 NODE_ENV=production \
 MONGODB_URI=${process.env.PROD_MONGODB_URI} \
+DATABASE_NAME=${process.env.PROD_DATABASE_NAME} \
 JWT_SECRET=${process.env.JWT_SECRET} \
 MAILGUN_API_KEY=${process.env.MAILGUN_API_KEY} \
 ADMIN_USER_EMAIL=${process.env.ADMIN_USER_EMAIL} \

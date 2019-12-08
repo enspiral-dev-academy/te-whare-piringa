@@ -1,8 +1,7 @@
 const { getClient, saveUsers, users } = require('../shared/db')
-const { databaseName } = require('../shared/config')
-const { prodMongoDbUri } = require('../shared/vars')
+const { prodMongoDbUri, prodDatabaseName } = require('../shared/vars')
 
-const client = getClient(prodMongoDbUri, databaseName)
+const client = getClient(prodMongoDbUri, prodDatabaseName)
 
 client.connect()
   .then(conn => conn.db())
