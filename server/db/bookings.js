@@ -5,11 +5,22 @@ const {
   validateBookingDetails,
   checkBookingForOverlap } = require('../../shared/validation')
 const { databaseName } = require('../../shared/config')
-const { mongoDbUrl } = require('../../shared/vars')
+const { mongoDbUri } = require('../../shared/vars')
 const { getDatabase } = require('../../shared/db')
 
+module.exports = {
+  getAnonymousBookings,
+  getUserBookings,
+  getUserPastBookings,
+  getAllBookings,
+  addBooking,
+  confirmBooking,
+  deleteBooking,
+  requestDelete
+}
+
 function getDb () {
-  return getDatabase(mongoDbUrl, databaseName)
+  return getDatabase(mongoDbUri, databaseName)
 }
 
 function getBookingsCollection () {
@@ -122,15 +133,4 @@ function deleteBooking (bookingId, username) {
     //   { $set: { 'deleted': true } }
     // )
     .then(() => getUserBookings(username))
-}
-
-module.exports = {
-  getAnonymousBookings,
-  getUserBookings,
-  getUserPastBookings,
-  getAllBookings,
-  addBooking,
-  confirmBooking,
-  deleteBooking,
-  requestDelete
 }

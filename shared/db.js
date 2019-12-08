@@ -50,17 +50,15 @@ function getDatabase (url, databaseName) {
   // differently than the hosted Altas database when it comes to getting
   // a connection to the database. This function encapsulates the difference.
 
-  // if (nodeEnv === 'development') {
-  //   return getClient(url).connect().then(conn => conn.db(databaseName))
-  // }
+  if (nodeEnv === 'development') {
+    return getClient(url).connect().then(conn => conn.db(databaseName))
+  }
 
-  // if (nodeEnv === 'production') {
-  //   return getClient(url, databaseName).connect().then(conn => conn.db())
-  // }
+  if (nodeEnv === 'production') {
+    return getClient(url, databaseName).connect().then(conn => conn.db())
+  }
 
-  return getClient(url, databaseName).connect().then(conn => conn.db())
-
-  // throw new Error('NODE_ENV has unsupported value:', nodeEnv)
+  throw new Error('NODE_ENV has unsupported value:', nodeEnv)
 }
 
 // Also used directly by the init db scripts

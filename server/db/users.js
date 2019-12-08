@@ -2,7 +2,7 @@ const { generateHash } = require('authenticare/server')
 
 const { validateUserDetails } = require('../../shared/validation')
 const { databaseName } = require('../../shared/config')
-const { mongoDbUrl } = require('../../shared/vars')
+const { mongoDbUri } = require('../../shared/vars')
 const { getDatabase } = require('../../shared/db')
 
 const usersCollectionName = 'users'
@@ -18,7 +18,7 @@ module.exports = {
 }
 
 function getDb () {
-  return getDatabase(mongoDbUrl, databaseName)
+  return getDatabase(mongoDbUri, databaseName)
 }
 
 function isAdmin (username) {
