@@ -8,6 +8,7 @@ const {
   sendDeletionRequest,
   sendDeletionConfirmation
 } = require('../email')
+
 const {
   addBooking,
   requestDelete,
@@ -17,6 +18,7 @@ const {
   getUserBookings,
   getAnonymousBookings
 } = require('../db/bookings')
+
 const { isAdmin } = require('../db/users')
 
 const router = express.Router()

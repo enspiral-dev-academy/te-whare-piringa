@@ -3,8 +3,8 @@ import { connect } from 'react-redux'
 import Datetime from 'react-datetime'
 import { withRouter } from 'react-router-dom'
 
+import { showError } from '../actions/errors'
 import { addBooking } from '../actions/bookings'
-import { validationError } from '../actions/errors'
 import { validateBookingDetails, checkBookingForOverlap } from '../../shared/validation'
 
 const timeConstraints = {
@@ -77,9 +77,17 @@ class Book extends React.Component {
     }
 
     let message = validateBookingDetails(booking)
-    if (message !== 'ok') return this.props.dispatch(validationError(message))
+    if (message !== 'ok') {
+      this.props.dispatch(showError({ message }))
+      return
+    }
+
     message = checkBookingForOverlap(booking, this.props.bookings)
-    if (message !== 'ok') return this.props.dispatch(validationError(message))
+    if (message !== 'ok') {
+      this.props.dispatch(showError({ message }))
+      return
+    }
+
     this.props.dispatch(addBooking(booking))
     this.showThankYouMessage()
   }
@@ -168,7 +176,7 @@ class Book extends React.Component {
             </div>
           </div>
           <div className="form-group row text-center">
-            <input type='submit' value='Request booking' className="setting-btn" />
+            <button className="setting-btn" onClick={this.handleSubmit}>Request booking</button>
           </div>
         </form>
         }

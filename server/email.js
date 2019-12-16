@@ -4,6 +4,13 @@ const mailgun = require('mailgun-js')
 const { mailgunApiKey } = require('../shared/vars')
 const { newRequestEmail, mailgunDomainName } = require('../shared/config')
 
+module.exports = {
+  sendBookingRequest,
+  sendBookingConfirmation,
+  sendDeletionRequest,
+  sendDeletionConfirmation
+}
+
 function sendBookingRequest (booking, send = sendMail) {
   const sender = booking.emailAddress
   const receiver = newRequestEmail
@@ -129,11 +136,4 @@ function sendMail (details) {
       console.error(error)
     }
   })
-}
-
-module.exports = {
-  sendBookingRequest,
-  sendBookingConfirmation,
-  sendDeletionRequest,
-  sendDeletionConfirmation
 }

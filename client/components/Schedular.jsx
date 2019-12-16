@@ -6,8 +6,8 @@ import { isAuthenticated } from 'authenticare/client'
 
 import HoursColumn from './HoursColumn'
 import ScheduleColumns from './ScheduleColumns'
-import { validationError } from '../actions/errors'
 import { switchDate } from '../actions/bookings'
+import { showError } from '../actions/errors'
 import {
   checkBookingForOverlap,
   validateAgainstOpenHours
@@ -39,12 +39,12 @@ class Schedular extends React.Component {
 
     let dataCheck = checkBookingForOverlap(booking, this.props.bookings)
     if (dataCheck !== 'ok') {
-      return this.props.validationError(dataCheck)
+      return this.props.showError(dataCheck)
     }
 
     dataCheck = validateAgainstOpenHours(booking)
     if (dataCheck !== 'ok') {
-      return this.props.validationError(dataCheck)
+      return this.props.showError(dataCheck)
     }
 
     this.props.history.push('/book')
@@ -139,7 +139,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    validationError: message => dispatch(validationError(message)),
+    showError: message => dispatch(showError(message)),
     switchDate: date => dispatch(switchDate(date))
   }
 }
