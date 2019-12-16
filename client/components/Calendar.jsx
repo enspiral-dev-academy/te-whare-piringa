@@ -86,7 +86,7 @@ class Calendar extends React.Component {
 
   getDates (d, bookings) {
     const date = moment([d.year(), d.month()])
-    const firstDay = moment(date).day(1).day()
+    const firstDay = moment(date).date(1).day()
     const lastDate = moment(date).endOf('month').date()
     const lastDay = moment([d.year(), d.month(), lastDate]).day()
 
@@ -97,6 +97,7 @@ class Calendar extends React.Component {
     const adminStyle = {}
     adminStyle.cursor = this.props.admin ? 'pointer' : null
 
+    // previous month
     let i = 0
     while (i < firstDay) {
       const thisDate = moment(date).day(firstDay - 1)
@@ -117,6 +118,7 @@ class Calendar extends React.Component {
       i++
     }
 
+    // current month
     i = 1
     while (i <= lastDate) {
       const thisDate = moment([d.year(), d.month(), i])
@@ -147,9 +149,10 @@ class Calendar extends React.Component {
       i++
     }
 
+    // next month
     i = 1
     while (i < 7 - lastDay) {
-      const thisDate = moment([d.year(), d.month() + 1, i])
+      const thisDate = moment([d.year(), d.month()]).add('months', 1).date(i)
       const thisDateFormatted = thisDate.format('YYYY-MM-DD')
       let classNames = ['calendar-date', 'next-month']
 
