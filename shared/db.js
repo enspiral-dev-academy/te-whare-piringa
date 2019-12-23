@@ -20,20 +20,20 @@ Promise.all([
   generateHash(testUserPassword)]
 ).then(([adminHash, testuserHash]) => {
   users.push({ // admin
-    'username': adminUserEmail,
-    'fullName': 'Booking Administrator',
-    'phoneNumber': '111 222 333',
-    'emailAddress': adminUserEmail,
-    'hash': adminHash,
-    'isAdmin': true
+    username: adminUserEmail,
+    fullName: 'Booking Administrator',
+    phoneNumber: '111 222 333',
+    emailAddress: adminUserEmail,
+    hash: adminHash,
+    isAdmin: true
   })
   users.push({ // test user
-    'username': testUserEmail,
-    'fullName': 'Test User',
-    'phoneNumber': '444 555 666',
-    'emailAddress': testUserEmail,
-    'hash': testuserHash,
-    'isAdmin': false
+    username: testUserEmail,
+    fullName: 'Test User',
+    phoneNumber: '444 555 666',
+    emailAddress: testUserEmail,
+    hash: testuserHash,
+    isAdmin: false
   })
 })
 
@@ -64,7 +64,10 @@ function getDatabase (url, databaseName) {
 // Also used directly by the init db scripts
 function getClient (url, databaseName) {
   const connectionUrl = databaseName ? `${url}/${databaseName}` : url
-  return new MongoClient(connectionUrl, { useNewUrlParser: true })
+  return new MongoClient(
+    connectionUrl,
+    { useNewUrlParser: true, useUnifiedTopology: true }
+  )
 }
 
 function saveUsers (db, users) {
