@@ -26,12 +26,12 @@ class Calendar extends React.Component {
   }
 
   previousMonth () {
-    const previous = moment(this.props.date).subtract(1, 'months')
+    const previous = moment(this.props.date).subtract(1, 'month')
     this.props.switchDate(previous)
   }
 
   nextMonth () {
-    const next = moment(this.props.date).add(1, 'months')
+    const next = moment(this.props.date).add(1, 'month')
     this.props.switchDate(next)
   }
 
@@ -152,7 +152,7 @@ class Calendar extends React.Component {
     // next month
     i = 1
     while (i < 7 - lastDay) {
-      const thisDate = moment([d.year(), d.month()]).add('months', 1).date(i)
+      const thisDate = moment([d.year(), d.month()]).add(1, 'month').date(i)
       const thisDateFormatted = thisDate.format('YYYY-MM-DD')
       let classNames = ['calendar-date', 'next-month']
 

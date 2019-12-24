@@ -44,7 +44,8 @@ router.get('/', getTokenDecoder(false), (req, res) => {
             confirmed,
             dateAdded,
             deleteRequested,
-            requesterUsername } = booking
+            requesterUsername
+          } = booking
           const sanitizedBooking = isAdmin || requesterUsername === username
             ? booking
             : { startDate, endDate, confirmed, dateAdded, deleteRequested }

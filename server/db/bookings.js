@@ -3,7 +3,8 @@ const ObjectId = require('mongodb').ObjectID
 
 const {
   validateBookingDetails,
-  checkBookingForOverlap } = require('../../shared/validation')
+  checkBookingForOverlap
+} = require('../../shared/validation')
 const { mongoDbUri, databaseName } = require('../../shared/vars')
 const { getDatabase } = require('../../shared/db')
 
@@ -113,7 +114,7 @@ function requestDelete (bookingId, username) {
       .then(bookings => booking.confirmed
         ? bookings.updateOne( // because it's confirmed, request a delete
           { _id: ObjectId(bookingId) },
-          { $set: { 'deleteRequested': true } }
+          { $set: { deleteRequested: true } }
         )
         : bookings.deleteOne( // since it isn't confirmed, just delete it
           { _id: ObjectId(bookingId) }

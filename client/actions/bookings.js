@@ -44,8 +44,7 @@ export function confirmBooking (id) {
     dispatch(sendingRequest())
     makeRequest(`/bookings/confirm/${id}`, 'put')
       .then(res => {
-        dispatch(startBooking(res.body.booking))
-        dispatch(receiveBookings(res.body.bookings))
+        dispatch(receiveBookings(res.body))
       })
       .catch(err => dispatch(showError(err)))
       .finally(() => dispatch(gotResponse()))
