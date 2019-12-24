@@ -54,7 +54,7 @@
     "babel-loader": "^8.0.6",
     "cheerio": "^1.0.0-rc.3",
     "enzyme": "^3.11.0",
-    "enzyme-adapter-react-16": "^1.14.0",
+    "enzyme-adapter-react-16": "^1.15.2",
     "eslint": "^6.7.2",
     "eslint-config-standard": "^14.1.0",
     "eslint-plugin-import": "^2.19.1",
