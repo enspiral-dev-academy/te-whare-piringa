@@ -2,13 +2,24 @@ const moment = require('moment')
 
 const { openingHour, closingHour } = require('./config')
 
+module.exports = {
+  validateBookingDetails,
+  validateUserDetails,
+  checkBookingForOverlap,
+  validateAgainstOpenHours
+}
+
 function validateBookingDetails (booking) {
-  const { startDate, endDate, purpose } = booking
+  const { startDate, endDate, purpose, fullName, emailAddress, phoneNumber } = booking
 
   if (!booking) return 'No booking details found'
   if (!purpose) return 'Please enter the purpose for the booking'
-  if (!startDate) return 'Please enter the time and date you want the booking from'
-  if (!endDate) return 'Please enter the time and date you want the booking until'
+  if (!startDate) return 'Please enter the starting date and time for the booking'
+  if (!endDate) return 'Please enter the ending date and time for the booking'
+  if (!fullName) return "Please enter the contact person's name"
+
+  if (!checkEmailFormat(emailAddress)) return 'Please enter a valid email address'
+  if (!checkPhoneNumber(phoneNumber)) return 'Please enter a valid phone number'
 
   if (!startDate.isValid()) {
     return 'Please ensure the start date/time is in the correct format'
@@ -72,8 +83,12 @@ function validateUserDetails (user) {
   if (!user.emailAddress) return 'Please enter a contact email address'
   if (!user.phoneNumber) return 'Please enter a contact phone number'
   if (!checkEmailFormat(user.emailAddress)) return 'Please enter a valid email address'
-  if (user.phoneNumber.replace(/[^0-9]/g, '').length < 7) return 'Please enter a valid phone number'
+  if (!checkPhoneNumber(user.phoneNumber)) return 'Please enter a valid phone number'
   return 'ok'
+}
+
+function checkPhoneNumber (phoneNumber) {
+  return phoneNumber.replace(/[^0-9]/g, '').length > 6
 }
 
 function checkEmailFormat (email) {
@@ -93,11 +108,4 @@ function checkBookingForOverlap (booking, bookings) {
     const endDate2 = moment(existingBooking.endDate)
     return (endDate1 > startDate2 && (startDate1 < startDate2 || endDate1 <= endDate2)) || (startDate1 < endDate2 && (endDate1 > endDate2 || startDate1 >= startDate2))
   }
-}
-
-module.exports = {
-  validateBookingDetails,
-  validateUserDetails,
-  checkBookingForOverlap,
-  validateAgainstOpenHours
 }

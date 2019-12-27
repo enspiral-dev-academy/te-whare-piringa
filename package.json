@@ -29,7 +29,7 @@
   },
   "jest": {
     "setupFiles": [
-      "./test/client/setup-env.js"
+      "./client/setup-test-env.js"
     ]
   },
   "babel": {

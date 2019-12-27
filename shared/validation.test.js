@@ -3,17 +3,16 @@ const moment = require('moment')
 process.env.OPENING_HOUR = 6
 process.env.CLOSING_HOUR = 22
 
-const validate = require('../../shared/validation')
+const validate = require('./validation')
 
-const today = new Date()
-const tomorrow = moment(today).add(1, 'days').toDate()
+const tomorrow = moment().add(1, 'day')
 
 const exampleBooking = {
   fullName: 'Luke Warmwater',
   emailAddress: 'luke@luke.co.nz',
   phoneNumber: '1234567',
-  startDate: new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), 10),
-  endDate: new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), 12),
+  startDate: moment([tomorrow.year(), tomorrow.month(), tomorrow.date(), 10]),
+  endDate: moment([tomorrow.year(), tomorrow.month(), tomorrow.date(), 12]),
   purpose: 'To do things',
   guestNumber: 1
 }
@@ -26,19 +25,18 @@ const exampleUser = {
 
 const exampleBookings = [
   {
-    startDate: new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), 8),
-    endDate: new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), 10)
+    startDate: moment([tomorrow.year(), tomorrow.month(), tomorrow.date(), 8]),
+    endDate: moment([tomorrow.year(), tomorrow.month(), tomorrow.date(), 10])
   },
   {
-    startDate: new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), 12),
-    endDate: new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), 16)
+    startDate: moment([tomorrow.year(), tomorrow.month(), tomorrow.date(), 12]),
+    endDate: moment([tomorrow.year(), tomorrow.month(), tomorrow.date(), 16])
   }
 ]
 
 test('data validation tests are return a string', () => {
-  const expected = 'string'
-  const actual = typeof validate.validateBookingDetails()
-  expect(actual).toBe(expected)
+  const type = typeof validate.validateBookingDetails(exampleBooking)
+  expect(type).toBe('string')
 })
 
 test('check booking data validation returns "ok" when all booking data is valid', () => {
@@ -51,7 +49,7 @@ test('check booking data validation returns "ok" when all booking data is valid'
 test('error message returned if name is missing from booking', () => {
   const booking = Object.create(exampleBooking)
   booking.fullName = ''
-  const expected = 'Please enter the contact person\'s name'
+  const expected = "Please enter the contact person's name"
   const actual = validate.validateBookingDetails(booking)
   expect(actual).toBe(expected)
 })
@@ -59,7 +57,7 @@ test('error message returned if name is missing from booking', () => {
 test('error message returned if phone number is missing from booking', () => {
   const booking = Object.create(exampleBooking)
   booking.phoneNumber = ''
-  const expected = 'Please enter a contact phone number'
+  const expected = 'Please enter a valid phone number'
   const actual = validate.validateBookingDetails(booking)
   expect(actual).toBe(expected)
 })
@@ -155,7 +153,7 @@ test('error message returned if purpose is missing from booking', () => {
 test('error message returned if start date is missing', () => {
   const booking = Object.create(exampleBooking)
   booking.startDate = null
-  const expected = 'Please enter the time and date you want the booking from'
+  const expected = 'Please enter the starting date and time for the booking'
   const actual = validate.validateBookingDetails(booking)
   expect(actual).toBe(expected)
 })
@@ -163,14 +161,14 @@ test('error message returned if start date is missing', () => {
 test('error message returned if end date is missing', () => {
   const booking = Object.create(exampleBooking)
   booking.endDate = null
-  const expected = 'Please enter the time and date you want the booking until'
+  const expected = 'Please enter the ending date and time for the booking'
   const actual = validate.validateBookingDetails(booking)
   expect(actual).toBe(expected)
 })
 
 test('error message returned if start date is in the past', () => {
   const booking = Object.create(exampleBooking)
-  booking.startDate = new Date(99, 1, 1, 11)
+  booking.startDate = moment([1999, 1, 1, 11])
   const expected = 'You cannot use a start date/time in the past'
   const actual = validate.validateBookingDetails(booking)
   expect(actual).toBe(expected)
@@ -178,7 +176,7 @@ test('error message returned if start date is in the past', () => {
 
 test('error message returned if start date is after end date', () => {
   const booking = Object.create(exampleBooking)
-  booking.startDate = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), 16)
+  booking.startDate = moment([tomorrow.year(), tomorrow.month(), tomorrow.date(), 16])
   const expected = 'Please enter an end date/time that is after the start date/time'
   const actual = validate.validateBookingDetails(booking)
   expect(actual).toBe(expected)
@@ -186,7 +184,7 @@ test('error message returned if start date is after end date', () => {
 
 test('error message returned if start date not a round number of minutes', () => {
   const booking = Object.create(exampleBooking)
-  booking.startDate = new Date(moment(booking.startDate).add(23, 'minutes'))
+  booking.startDate = moment(booking.startDate).add(23, 'minutes')
   const expected = 'Please enter a start date/time that is either on the hour or on the half hour'
   const actual = validate.validateBookingDetails(booking)
   expect(actual).toBe(expected)
@@ -194,7 +192,7 @@ test('error message returned if start date not a round number of minutes', () =>
 
 test('error message returned if end date not a round number of minutes', () => {
   const booking = Object.create(exampleBooking)
-  booking.endDate = new Date(moment(booking.startDate).add(23, 'seconds'))
+  booking.endDate = moment(booking.startDate).add(23, 'seconds')
   const expected = 'Please enter an end date/time that is either on the hour or on the half hour'
   const actual = validate.validateBookingDetails(booking)
   expect(actual).toBe(expected)
@@ -210,7 +208,7 @@ test('error message returned if end date equals start date', () => {
 
 test('error message returned for 30 minute booking', () => {
   const booking = Object.create(exampleBooking)
-  booking.endDate = new Date(moment(booking.startDate).add(30, 'minutes'))
+  booking.endDate = moment(booking.startDate).add(30, 'minutes')
   const expected = 'The minimum booking length is one hour'
   const actual = validate.validateBookingDetails(booking)
   expect(actual).toBe(expected)
@@ -272,14 +270,14 @@ test('error message returned if user did not enter a valid phone number', () => 
 
 test('"ok" message returned if booking does not overlap with any other bookings', () => {
   const booking = Object.create(exampleBooking)
-  booking.startDate = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate() + 1, 10)
-  booking.endDate = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate() + 1, 12)
+  booking.startDate = moment([tomorrow.year(), tomorrow.month(), tomorrow.date() + 1, 10])
+  booking.endDate = moment([tomorrow.year(), tomorrow.month(), tomorrow.date() + 1, 12])
   const expected = 'ok'
   const actual = validate.checkBookingForOverlap(booking, exampleBookings)
   expect(actual).toBe(expected)
 })
 
-test('"ok" message returned if booking starts when another ends and otherwise does\'t overlap', () => {
+test("'ok' message returned if booking starts when another ends and otherwise does't overlap", () => {
   const booking = Object.create(exampleBooking)
   const expected = 'ok'
   const actual = validate.checkBookingForOverlap(booking, exampleBookings)
@@ -288,8 +286,8 @@ test('"ok" message returned if booking starts when another ends and otherwise do
 
 test('message returned if booking starts when another booking starts', () => {
   const booking = Object.create(exampleBooking)
-  booking.startDate = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), 12)
-  booking.endDate = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), 14)
+  booking.startDate = moment([tomorrow.year(), tomorrow.month(), tomorrow.date(), 12])
+  booking.endDate = moment([tomorrow.year(), tomorrow.month(), tomorrow.date(), 14])
   const expected = 'Your request overlaps with another booking'
   const actual = validate.checkBookingForOverlap(booking, exampleBookings)
   expect(actual).toBe(expected)
@@ -297,8 +295,8 @@ test('message returned if booking starts when another booking starts', () => {
 
 test('message returned if booking overlaps the start date of another booking', () => {
   const booking = Object.create(exampleBooking)
-  booking.startDate = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), 11)
-  booking.endDate = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), 13)
+  booking.startDate = moment([tomorrow.year(), tomorrow.month(), tomorrow.date(), 11])
+  booking.endDate = moment([tomorrow.year(), tomorrow.month(), tomorrow.date(), 13])
   const expected = 'Your request overlaps with another booking'
   const actual = validate.checkBookingForOverlap(booking, exampleBookings)
   expect(actual).toBe(expected)
@@ -306,8 +304,8 @@ test('message returned if booking overlaps the start date of another booking', (
 
 test('message returned if booking overlaps the end date of another booking', () => {
   const booking = Object.create(exampleBooking)
-  booking.startDate = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), 14)
-  booking.endDate = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), 21)
+  booking.startDate = moment([tomorrow.year(), tomorrow.month(), tomorrow.date(), 14])
+  booking.endDate = moment([tomorrow.year(), tomorrow.month(), tomorrow.date(), 21])
   const expected = 'Your request overlaps with another booking'
   const actual = validate.checkBookingForOverlap(booking, exampleBookings)
   expect(actual).toBe(expected)
@@ -315,8 +313,8 @@ test('message returned if booking overlaps the end date of another booking', () 
 
 test('message returned if booking overlaps all of another booking', () => {
   const booking = Object.create(exampleBooking)
-  booking.startDate = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), 11)
-  booking.endDate = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), 21)
+  booking.startDate = moment([tomorrow.year(), tomorrow.month(), tomorrow.date(), 11])
+  booking.endDate = moment([tomorrow.year(), tomorrow.month(), tomorrow.date(), 21])
   const expected = 'Your request overlaps with another booking'
   const actual = validate.checkBookingForOverlap(booking, exampleBookings)
   expect(actual).toBe(expected)
@@ -324,7 +322,7 @@ test('message returned if booking overlaps all of another booking', () => {
 
 test('error message returned for a booking that starts before 6am', () => {
   const booking = Object.create(exampleBooking)
-  booking.startDate = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), 2)
+  booking.startDate = moment([tomorrow.year(), tomorrow.month(), tomorrow.date(), 2])
   const expected = 'You may not make a booking that starts that early'
   const actual = validate.validateAgainstOpenHours(booking)
   expect(actual).toBe(expected)
@@ -332,7 +330,7 @@ test('error message returned for a booking that starts before 6am', () => {
 
 test('error message returned for a booking that starts after 10pm', () => {
   const booking = Object.create(exampleBooking)
-  booking.startDate = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), -1)
+  booking.startDate = moment([tomorrow.year(), tomorrow.month(), tomorrow.date(), 23])
   const expected = 'You may not make a booking that starts that late'
   const actual = validate.validateAgainstOpenHours(booking)
   expect(actual).toBe(expected)
@@ -340,7 +338,7 @@ test('error message returned for a booking that starts after 10pm', () => {
 
 test('error message returned for a booking that ends before 6am', () => {
   const booking = Object.create(exampleBooking)
-  booking.endDate = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate() + 1, 2)
+  booking.endDate = moment([tomorrow.year(), tomorrow.month(), tomorrow.date(), 2])
   const expected = 'You may not make a booking that ends that early'
   const actual = validate.validateAgainstOpenHours(booking)
   expect(actual).toBe(expected)
@@ -348,7 +346,7 @@ test('error message returned for a booking that ends before 6am', () => {
 
 test('error message returned for a booking that ends after 10pm', () => {
   const booking = Object.create(exampleBooking)
-  booking.endDate = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), 23)
+  booking.endDate = moment([tomorrow.year(), tomorrow.month(), tomorrow.date(), 23])
   const expected = 'You may not make a booking that ends that late'
   const actual = validate.validateAgainstOpenHours(booking)
   expect(actual).toBe(expected)
@@ -356,7 +354,7 @@ test('error message returned for a booking that ends after 10pm', () => {
 
 test('user is allowed to book over more than one day', () => {
   const booking = Object.create(exampleBooking)
-  booking.endDate = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate() + 4, 16)
+  booking.endDate = moment([tomorrow.year(), tomorrow.month(), tomorrow.date() + 4, 16])
   const expected = 'ok'
   const actual = validate.validateAgainstOpenHours(booking)
   expect(actual).toBe(expected)

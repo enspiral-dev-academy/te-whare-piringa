@@ -6,9 +6,9 @@ import {
   sendBookingConfirmation,
   sendDeletionRequest,
   sendDeletionConfirmation
-} from '../../server/email'
+} from './email'
 
-import { newRequestEmail } from '../../shared/config'
+import { newRequestEmail } from '../shared/config'
 
 const tomorrow = moment().add(1, 'days')
 
