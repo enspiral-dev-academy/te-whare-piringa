@@ -50,7 +50,7 @@
   "devDependencies": {
     "@babel/core": "^7.7.7",
     "@babel/preset-env": "^7.7.7",
-    "@babel/preset-react": "^7.7.4",
+    "@babel/preset-react": "^7.10.4",
     "babel-loader": "^8.0.6",
     "cheerio": "^1.0.0-rc.3",
     "enzyme": "^3.11.0",
